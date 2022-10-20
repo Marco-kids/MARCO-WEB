@@ -1,0 +1,30 @@
+{
+  "name": "marco-web",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Marco-kids/MARCO-WEB.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Marco-kids/MARCO-WEB/issues"
+  },
+  "homepage": "https://github.com/Marco-kids/MARCO-WEB#readme",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "next": "latest",
+    "react": "17.0.2",
+    "react-dom": "17.0.2"
+  }
+}
