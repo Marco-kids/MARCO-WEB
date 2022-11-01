@@ -44,7 +44,9 @@ const columns = [
 function App() {
   return (
     <div style={{ height: 400, width: '100%' }}>
+      
     <DataGrid
+    
       rows={rows}
       columns={columns}
       pageSize={5}
