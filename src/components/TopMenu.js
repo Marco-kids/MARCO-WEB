@@ -1,5 +1,7 @@
 import * as React from 'react';
 import { useEffect, useState } from "react";
+import { Navigate } from "react-router";
+import { useNavigate } from "react-router-dom";
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -13,13 +15,16 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
+import Logo from "../assets/logo.png"
 
-const pages = ['Instrucciones', 'Tabla', 'Añadir modelo'];
+
+const pages = ['Instrucciones', 'Tabla', 'Añadir obra'];
 const settings = ['Perfil', 'Cerrar Sesion'];
 
 function TopMenu() {
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
+  const navigate = useNavigate();
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -28,7 +33,7 @@ function TopMenu() {
     setAnchorElUser(event.currentTarget);
   };
 
-  const handleCloseNavMenu = () => {
+  const handleCloseNavMenu = (page) => {
     setAnchorElNav(null);
   };
 
@@ -36,29 +41,35 @@ function TopMenu() {
     setAnchorElUser(null);
   };
 
+  
+
+  const handleChangeView = async (page) => {
+    handleCloseNavMenu();
+    navigate("/table");
+    try {
+      
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   return (
-    <AppBar position="static">
+    <AppBar position="static" 
+        sx = {{backgroundColor: "#E63E6B"
+            ,}}
+    >
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
-          <Typography
-            variant="h6"
-            noWrap
-            component="a"
-            href="/"
-            sx={{
-              mr: 2,
-              display: { xs: 'none', md: 'flex' },
-              fontFamily: 'monospace',
-              fontWeight: 700,
-              letterSpacing: '.3rem',
-              color: 'inherit',
-              textDecoration: 'none',
-            }}
-          >
-            LOGO
-          </Typography>
-
+        <Box 
+        component="img" 
+        src={Logo} 
+        sx={{ 
+            display: { xs: 'none', md: 'flex' }, 
+            mr: 1, 
+            width: "20%",
+            justifySelf: "center",
+         }}
+        />
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
             <IconButton
               size="large"
@@ -88,48 +99,82 @@ function TopMenu() {
                 display: { xs: 'block', md: 'none' },
               }}
             >
-              {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">{page}</Typography>
-                </MenuItem>
-              ))}
+            <MenuItem
+                  onClick={() => {
+                    handleCloseNavMenu();
+                    navigate("/table");
+                  }}
+                >
+                  
+                  <Typography textAlign="center" >
+                    Instrucciones
+                  </Typography>
+            </MenuItem>
+            <MenuItem
+                  onClick={() => {
+                    handleCloseNavMenu();
+                    navigate("/table");
+                  }}
+                >
+                  
+                  <Typography textAlign="center" >
+                    Tabla
+                  </Typography>
+            </MenuItem>
+            <MenuItem
+                  onClick={() => {
+                    handleCloseNavMenu();
+                    navigate("/add");
+                  }}
+                >
+                  
+                  <Typography textAlign="center" >
+                    Añadir Obra
+                  </Typography>
+            </MenuItem>
             </Menu>
           </Box>
-          <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
-          <Typography
-            variant="h5"
-            noWrap
-            component="a"
-            href=""
-            sx={{
-              mr: 2,
-              display: { xs: 'flex', md: 'none' },
-              flexGrow: 1,
-              fontFamily: 'monospace',
-              fontWeight: 700,
-              letterSpacing: '.3rem',
-              color: 'inherit',
-              textDecoration: 'none',
-            }}
-          >
-            LOGO
-          </Typography>
+          <Box component="img" src={Logo} sx={{ display: { xs: 'flex', md: 'none' }, mr: 1, width: "20%" }}/>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            {pages.map((page) => (
-              <Button
-                key={page}
-                onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: 'white', display: 'block' }}
-              >
-                {page}
-              </Button>
-            ))}
+            <MenuItem
+                  onClick={() => {
+                    handleCloseNavMenu();
+                    navigate("/table");
+                  }}
+                >
+                  
+                  <Typography textAlign="center" >
+                    Instrucciones
+                  </Typography>
+            </MenuItem>
+            <MenuItem
+                  onClick={() => {
+                    handleCloseNavMenu();
+                    navigate("/table");
+                  }}
+                >
+                  
+                  <Typography textAlign="center" >
+                    Tabla
+                  </Typography>
+            </MenuItem>
+            <MenuItem
+                  onClick={() => {
+                    handleCloseNavMenu();
+                    navigate("/add");
+                  }}
+                >
+                  
+                  <Typography textAlign="center" >
+                    Añadir Obra
+                  </Typography>
+            </MenuItem>
           </Box>
 
           <Box sx={{ flexGrow: 1 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                <Avatar alt="Marco" src="/static/images/avatar/2.jpg" />
               </IconButton>
             </Tooltip>
             <Menu

@@ -1,20 +1,25 @@
-import React from 'react';
-import { useEffect, useState } from "react";
+import React from "react";
 import { Outlet } from "react-router";
 import Grid from "@mui/material/Grid";
+import TopMenu from "../components/TopMenu";
 
+const drawerWidthLeft = 240;
 
-function Home() {
-const [drawerWidthLeft, setDrawerWidthLeft] = useState(240);
-
-  useEffect(() => {
-
-  }, []);
-
+const Home = () => {
   return (
     <>
-    
-  </>
+      <TopMenu/>
+      <Grid
+        container
+        sx={{
+          flexGrow: 1,
+          p: 3,
+          width: "100%",
+        }}
+      >
+        <Outlet />
+      </Grid>
+    </>
   );
 }
 

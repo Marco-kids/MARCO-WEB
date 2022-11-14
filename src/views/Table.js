@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import '../styles/Table.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { DataGrid } from '@mui/x-data-grid';
+import { Box } from "@mui/material";
 
 
 function Table() {
@@ -51,17 +52,49 @@ function Table() {
   }, []);
 
   return (
-    <div style={{ height: 400, width: '100%' }}>
+    <div style={{ height: 1000, width: '100%' }}>
+
       
-    <DataGrid
-      rows={rows}
-      columns={columns}
-      getRowId={(row) => row._id}
-      pageSize={5}
-      rowsPerPageOptions={[5]}
-      checkboxSelection
-    />
-  </div>
+      <Box sx={{
+        //color al header
+        height: 600, width: '100%', '& .super-app-theme--header': {
+          backgroundColor: 'rgba(161, 43, 74, 1)',
+          color: 'rgba(255, 255, 255, 1)'
+          
+        },
+      }}>
+        <DataGrid
+
+          rows={rows}
+          columns={columns}
+          getRowId={(row) => row._id}
+          pageSize={5}
+          rowsPerPageOptions={[5]}
+          checkboxSelection
+
+          //Color a las celdas
+          sx={{
+            boxShadow: 2,
+            border: 2,
+            borderColor: 'rgba(161, 43, 74, 1)',
+            '& .MuiDataGrid-cell:hover': {
+              color: 'rgba(161, 43, 74, 1)',
+            },
+            bgcolor: 'rgba(230, 62, 107, 0.35)',
+            '& .MuiDataGrid-cell:hover': {
+              color: 'rgba(230, 62, 107, 1)',
+            },
+            
+            
+          }}
+
+          
+
+          
+        />
+      </Box>
+
+    </div>
   );
 }
 
