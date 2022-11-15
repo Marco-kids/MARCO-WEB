@@ -42,7 +42,7 @@ function Table() {
   ];
 
   useEffect(() => {
-    fetch("http://localhost:8080/api/obra")
+    fetch("http://10.14.255.70:10205/api/obra")
       .then((response) => response.json())
       .then((data) => {
         console.log(data);

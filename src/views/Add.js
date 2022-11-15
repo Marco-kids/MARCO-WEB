@@ -7,11 +7,13 @@ import { Typography, TextField, Box, Grid, Button } from "@mui/material";
 import Iconupload from '@mui/icons-material/FileUpload';
 
 function Add() {
-
-  const [isLoading, setIsLoading] = useState(true);
-  const [imageUrl, setImageUrl] = useState(null);
-  const [rows, setRows] = useState([]);
   const navigate = useNavigate();
+  const [title, setTitle] = useState();
+  const [autor, setAutor] = useState();
+  const [descripcion, setDescripcion] = useState();
+  const [latitud, setLatitud] = useState();
+  const [longitud, setLongitud] = useState();
+  const [file, setFile] = useState();
 
   const goBack = async () => {
     navigate("/table");
@@ -21,14 +23,42 @@ function Add() {
       console.error(err);
     }
   };
+  async function handleFileInputChange(e) {
+    const files = e.target.files;
+    const file = files[0];
+    setFile(file);
+  }
 
   const handleAdd = async () => {
+    let formData = new FormData();
+    formData.append('nombre', title);
+    formData.append('autor', autor);
+    formData.append('latitud', latitud);
+    formData.append('longitud', longitud);
+    formData.append('descripcion', descripcion);
+    formData.append('file', file);
+
+    let dataBody = {};
+    dataBody.nombre = title;
+    dataBody.autor = autor;
+    dataBody.latitud = latitud;
+    dataBody.longitud = longitud;
+    dataBody.descripcion = descripcion;
+    dataBody.file = file;
     try {
-        fetch("http://localhost:8080/api/create-obra")
-        .then((response) => response.json())
-        .then((data) => {
-            console.log(data);
-            navigate("/table");
+        console.log(formData);
+
+        fetch("http://10.14.255.70:10205/api/create-obra", {
+          method: "POST",
+          body: dataBody
+        }).then(function (res) {
+          if (res.ok) {
+            alert("Perfect! ");
+          } else if (res.status == 401) {
+            alert("Oops! ");
+          }
+        }, function (e) {
+          alert("Error submitting form!");
         });
 
     } catch (err) {
@@ -59,13 +89,11 @@ function Add() {
                 Titulo
             </Typography>
             <TextField
-              required
               margin="dense"
               variant="outlined"
               type="text"
-              //label="Campo requerido"
-              //defaultValue={currentRfi ? currentRfi.title : ''}
-              //onChange={(e) => setTitle(e.target.value)}
+              required={true}
+              onChange={(e) => setTitle(e.target.value)}
               sx={{ width: "50%", m: 1, backgroundColor: "#F9A1B8"  }}
             />
 
@@ -81,9 +109,8 @@ function Add() {
               margin="dense"
               variant="outlined"
               type="text"
-              //label="Autor de la obra"
-              //defaultValue={currentRfi ? currentRfi.title : ''}
-              //onChange={(e) => setTitle(e.target.value)}
+       
+              onChange={(e) => setAutor(e.target.value)}
               sx={{  width: "50%", m: 1, backgroundColor: "#F9A1B8" }}
             />
           </Box>
@@ -107,9 +134,8 @@ function Add() {
               margin="dense"
               variant="outlined"
               type="text"
-              //label="Latitud"
-              //defaultValue={currentRfi ? currentRfi.title : ''}
-              //onChange={(e) => setTitle(e.target.value)}
+              
+              onChange={(e) => setLatitud(e.target.value)}
               sx={{ width: "50%", m: 1, backgroundColor: "#F9A1B8"  }}
             />
             <Typography 
@@ -124,9 +150,8 @@ function Add() {
               margin="dense"
               variant="outlined"
               type="text"
-              //label="Longitud"
-              //defaultValue={currentRfi ? currentRfi.title : ''}
-              //onChange={(e) => setTitle(e.target.value)}
+              
+              onChange={(e) => setLongitud(e.target.value)}
               sx={{ width: "50%", m: 1, backgroundColor: "#F9A1B8"  }}
             />
           </Box>
@@ -158,10 +183,8 @@ function Add() {
               //label="Descripcion de la obra"
               multiline
               rows={5}
-              //defaultValue={currentRfi ? currentRfi.question : ''}
-              //onChange={(e) => setQuestion(e.target.value)}
+              onChange={(e) => setDescripcion(e.target.value)}
               sx={{ width: "100%", backgroundColor: "#F9A1B8" }}
-              // error={questionError}
             />
           </Box>
         </Grid>
@@ -185,7 +208,13 @@ function Add() {
                 },
               }}
             >
-              <input name="filefield" multiple="multiple" accept="image/*" type="file" style = {{display: "none"}} />
+              <input 
+              name="file" 
+              multiple="multiple" 
+              accept=".usdz" 
+              type="file" 
+              style = {{display: "none"}}
+              onChange={handleFileInputChange} />
               <Iconupload /> Sube el modelo
             </Button>
           </Box>
@@ -237,7 +266,7 @@ function Add() {
               variant="contained"
               size="small"
               id="createButton"
-              //onClick={createRfi}
+              onClick={handleAdd}
             >
               Añadir
             </Button>
