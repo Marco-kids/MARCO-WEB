@@ -38,27 +38,20 @@ function Add() {
     formData.append('descripcion', descripcion);
     formData.append('file', file);
 
-    let dataBody = {};
-    dataBody.nombre = title;
-    dataBody.autor = autor;
-    dataBody.latitud = latitud;
-    dataBody.longitud = longitud;
-    dataBody.descripcion = descripcion;
-    dataBody.file = file;
     try {
         console.log(formData);
-
-        fetch("http://10.14.255.70:10205/api/create-obra", {
+        fetch("http://192.168.1.66:8080/api/create-obra", {
           method: "POST",
-          body: dataBody
+          body: formData
         }).then(function (res) {
           if (res.ok) {
-            alert("Perfect! ");
-          } else if (res.status == 401) {
-            alert("Oops! ");
+            alert("Obra Creada");
+            navigate("/table");
+          } else if (res.status == 402) {
+            alert("Alguno de los campos esta vacio");
           }
         }, function (e) {
-          alert("Error submitting form!");
+          alert("Error en servidor");
         });
 
     } catch (err) {
