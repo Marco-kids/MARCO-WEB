@@ -26,17 +26,26 @@ import ClearOutlinedIcon from '@mui/icons-material/ClearOutlined';
 
 
 const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
-
-const initialRows = [
-  { id: 1, nombre: 'Estatua Libertad', autor: 'Frederic Auguste', descripcion: 'bla bla bla', latitud: -100.232132, longitud: -100.232132 },
-  { id: 2, nombre: 'Estatua Libertad', autor: ' Auguste', descripcion: 'bla bla bla', latitud: -100.232132, longitud: -100.232132 },
-  { id: 3, nombre: 'Estatua Libertad', autor: 'Frederic Auguste', descripcion: 'bla bla bla', latitud: -100.232132, longitud: -100.232132 },
-  { id: 4, nombre: 'Estatua Libertad', autor: 'Frederic Auguste', descripcion: 'bla bla bla', latitud: -100.232132, longitud: -100.232132 },
-  { id: 5, nombre: 'Estatua Libertad', autor: 'Frederic Auguste', descripcion: 'bla bla bla', latitud: -100.232132, longitud: -100.232132 },
-  { id: 6, nombre: 'Estatua Libertad', autor: 'Frederic Auguste', descripcion: 'bla bla bla', latitud: -100.232132, longitud: -100.232132 },
+const zonas = [
+  { zona:"Sala 1", value: 1 },
+  { zona:"Sala 2", value: 2 },
+  { zona:"Sala 3", value: 3 },
+  { zona:"Sala 4", value: 4 },
+  { zona:"Sala 5A", value: 5 },
+  { zona:"Sala 5B", value: 6 },
+  { zona:"Sala 5C", value: 7 },
+  { zona:"Sala 5D", value: 8 },
+  { zona:"Patio Esculturas", value: 9 },
+  { zona:"Patio Central", value: 10 },
+  { zona:"Sala 6", value: 11 },
+  { zona:"Sala 7", value: 12 },
+  { zona:"Sala 8", value: 13 },
+  { zona:"Sala 9", value: 14 },
+  { zona:"Sala 10", value: 15 },
+  { zona:"Sala 11", value: 16 },
 ];
 
-/*function EditToolbar(props) {
+function EditToolbar(props) {
   const { setRows, setRowModesModel } = props;
 
   const handleClick = () => {
@@ -60,7 +69,7 @@ const initialRows = [
 EditToolbar.propTypes = {
   setRowModesModel: PropTypes.func.isRequired,
   setRows: PropTypes.func.isRequired,
-};*/
+};
 
 
 function Table() {
@@ -81,6 +90,15 @@ function Table() {
       field: 'descripcion',
       headerName: 'Descripcion',
       width: 300,
+      headerClassName: 'super-app-theme--header',
+      headerAlign: 'center',
+      editable: true,
+    },
+    {
+      field: 'zona',
+      headerName: 'Zona',
+      type: 'number',
+      width: 125,
       headerClassName: 'super-app-theme--header',
       headerAlign: 'center',
       editable: true,
@@ -162,10 +180,10 @@ function Table() {
   ];
 
   useEffect(() => {
-    fetch("http://192.168.1.66:8080/api/all-obras")
+    //fetch("http://10.14.255.70:10205/api/all-obras")
+    fetch("http://localhost:8080/api/all-obras")
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
         setRows(data);
         setIsLoading(false); 
       });
@@ -181,21 +199,53 @@ function Table() {
 
   const handleEditClick = (_id) => () => {
     setRowModesModel({ ...rowModesModel, [_id]: { mode: GridRowModes.Edit } });
+
   };
 
-  const handleSaveClick = (_id) => () => {
+  const handleSaveClick = async (_id) => {
     setRowModesModel({ ...rowModesModel, [_id]: { mode: GridRowModes.View } });
+    //setRows(rows.filter((row) => row._id !== _id));
+    handleUpdateObra();
+    /*fetch("http://10.14.255.70:10205/api/delete-obra/" + _id, {
+          method: "DELETE",
+        }).then(function (res) {
+          if (res.ok) {
+            alert("Elemento borrado ");
+          } else if (res.status == 403) {
+            alert("Obra inexistente");
+          }
+        }, function (e) {
+          alert("Server Error");
+    });*/
+  };
+
+  const handleUpdateObra = () => () => {
+    console.log(rows);
+    /*setRows(rows.filter((row) => row._id !== _id));
+    fetch("http://10.14.255.70:10205/api/delete-obra/" + _id, {
+          method: "DELETE",
+        }).then(function (res) {
+          if (res.ok) {
+            alert("Elemento borrado ");
+          } else if (res.status == 403) {
+            alert("Obra inexistente");
+          }
+        }, function (e) {
+          alert("Server Error");
+    });*/
   };
 
   const handleDeleteClick = (_id) => () => {
     const bodyId = {
       id: _id,
     };
+    console.log("JSON.stringify(bodyId)");
     console.log(JSON.stringify(bodyId));
     /*let formData = new FormData();
     formData.append('id', _id);*/
     setRows(rows.filter((row) => row._id !== _id));
-    fetch("http://192.168.1.66:8080/api/delete-obra/" + _id, {
+    //fetch("http://10.14.255.70:10205/api/delete-obra/" + _id, {
+    fetch("http://localhost:8080/api/delete-obra/" + _id, {
           method: "DELETE",
         }).then(function (res) {
           if (res.ok) {
