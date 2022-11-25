@@ -180,8 +180,8 @@ function Table() {
   ];
 
   useEffect(() => {
-    //fetch("http://10.14.255.70:10205/api/all-obras")
-    fetch("http://localhost:8080/api/all-obras")
+    fetch("http://10.14.255.70:10205/api/all-obras")
+    //fetch("http://localhost:8080/api/all-obras")
       .then((response) => response.json())
       .then((data) => {
         setRows(data);
@@ -244,8 +244,8 @@ function Table() {
     /*let formData = new FormData();
     formData.append('id', _id);*/
     setRows(rows.filter((row) => row._id !== _id));
-    //fetch("http://10.14.255.70:10205/api/delete-obra/" + _id, {
-    fetch("http://localhost:8080/api/delete-obra/" + _id, {
+    fetch("http://10.14.255.70:10205/api/delete-obra/" + _id, {
+    //fetch("http://localhost:8080/api/delete-obra/" + _id, {
           method: "DELETE",
         }).then(function (res) {
           if (res.ok) {
