@@ -1,7 +1,7 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import '../styles/Table.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { DataGrid } from '@mui/x-data-grid';
+import { DataGrid, GridColumns, GridRowsProp } from '@mui/x-data-grid';
 import Box from '@mui/material/Box';
 import SearchAppBar from '../components/SearchBar';
 import PropTypes from 'prop-types';
@@ -20,30 +20,7 @@ import {
 import {
   randomId,
 } from '@mui/x-data-grid-generator';
-import Checkbox from '@mui/material/Checkbox';
-import CheckOutlinedIcon from '@mui/icons-material/CheckOutlined';
-import ClearOutlinedIcon from '@mui/icons-material/ClearOutlined';
 
-
-const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
-const zonas = [
-  { zona:"Sala 1", value: 1 },
-  { zona:"Sala 2", value: 2 },
-  { zona:"Sala 3", value: 3 },
-  { zona:"Sala 4", value: 4 },
-  { zona:"Sala 5A", value: 5 },
-  { zona:"Sala 5B", value: 6 },
-  { zona:"Sala 5C", value: 7 },
-  { zona:"Sala 5D", value: 8 },
-  { zona:"Patio Esculturas", value: 9 },
-  { zona:"Patio Central", value: 10 },
-  { zona:"Sala 6", value: 11 },
-  { zona:"Sala 7", value: 12 },
-  { zona:"Sala 8", value: 13 },
-  { zona:"Sala 9", value: 14 },
-  { zona:"Sala 10", value: 15 },
-  { zona:"Sala 11", value: 16 },
-];
 
 function EditToolbar(props) {
   const { setRows, setRowModesModel } = props;
@@ -53,7 +30,7 @@ function EditToolbar(props) {
     setRows((oldRows) => [...oldRows, { id, titulo: 'Titulo', autor: 'Autor', descripcion: 'Descripción', latitud: '', longitud: '', link: '', isNew: true }]);
     setRowModesModel((oldModel) => ({
       ...oldModel,
-      [id]: { mode: GridRowModes.Edit, fieldToFocus: 'name' },
+      [id]: { mode: GridRowModes.Edit, fieldToFocus: 'Titulo' },
     }));
   };
 
@@ -76,14 +53,16 @@ function Table() {
   const [isLoading, setIsLoading] = useState();
   const [rowModesModel, setRowModesModel] = React.useState({});
   const [rows, setRows] = useState([]);
+  const [rowId, setRowId] = useState(null);
+
 
   const columns = [
     {
-      field: 'nombre', headerName: 'Titulo', width: 230, headerClassName: 'super-app-theme--header',
+      field: 'nombre', headerName: 'Titulo', width: 220, headerClassName: 'super-app-theme--header',
       headerAlign: 'center', editable: true,
     },
     {
-      field: 'autor', headerName: 'Autor', width: 230, headerClassName: 'super-app-theme--header',
+      field: 'autor', headerName: 'Autor', width: 220, headerClassName: 'super-app-theme--header',
       headerAlign: 'center', editable: true,
     },
     {
@@ -98,25 +77,7 @@ function Table() {
       field: 'zona',
       headerName: 'Zona',
       type: 'number',
-      width: 125,
-      headerClassName: 'super-app-theme--header',
-      headerAlign: 'center',
-      editable: true,
-    },
-    {
-      field: 'latitud',
-      headerName: 'Latitud',
-      type: 'number',
-      width: 125,
-      headerClassName: 'super-app-theme--header',
-      headerAlign: 'center',
-      editable: true,
-    },
-    {
-      field: 'longitud',
-      headerName: 'Longitud',
-      type: 'number',
-      width: 125,
+      width: 220,
       headerClassName: 'super-app-theme--header',
       headerAlign: 'center',
       editable: true,
@@ -136,70 +97,34 @@ function Table() {
       type: 'actions',
       headerName: 'Acciones',
       headerClassName: 'super-app-theme--header',
-      width: 170,
+      width: 220,
       cellClassName: 'actions',
       getActions: ({ id }) => {
-        const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
-
-        if (isInEditMode) {
-          return [
-            <GridActionsCellItem
-              icon={<SaveIcon />}
-              label="Save"
-              onClick={handleSaveClick(id)}
-            />,
-            <GridActionsCellItem
-              icon={<CancelIcon />}
-              label="Cancelar"
-              className="textPrimary"
-              onClick={handleCancelClick(id)}
-              color="inherit"
-            />,
-
-          ];
-        }
-
         return [
-          <GridActionsCellItem
-            icon={<EditIcon />}
-            label="Editar"
-            className="textPrimary"
-            onClick={handleEditClick(id)}
-            color="inherit"
-          />,
           <GridActionsCellItem
             icon={<DeleteIcon />}
             label="Borrar"
             onClick={handleDeleteClick(id)}
             color="inherit"
           />,
-          <Checkbox {...label} icon={<ClearOutlinedIcon />} checkedIcon={< CheckOutlinedIcon />} color="default" />
         ];
       },
     },
   ];
 
   useEffect(() => {
-    fetch("http://10.14.255.70:10205/api/all-obras")
+    fetch("http://189.205.248.189/marcokids/api/api/all-obras")
+    //189.205.248.189/marcokids
     //fetch("http://localhost:8080/api/all-obras")
       .then((response) => response.json())
       .then((data) => {
         setRows(data);
-        setIsLoading(false); 
+        setIsLoading(false);
       });
   }, []);
 
-  const handleRowEditStart = (params, event) => {
-    event.defaultMuiPrevented = true;
-  };
-
-  const handleRowEditStop = (params, event) => {
-    event.defaultMuiPrevented = true;
-  };
-
   const handleEditClick = (_id) => () => {
     setRowModesModel({ ...rowModesModel, [_id]: { mode: GridRowModes.Edit } });
-
   };
 
   const handleSaveClick = async (_id) => {
@@ -219,20 +144,37 @@ function Table() {
     });*/
   };
 
-  const handleUpdateObra = () => () => {
-    console.log(rows);
-    /*setRows(rows.filter((row) => row._id !== _id));
-    fetch("http://10.14.255.70:10205/api/delete-obra/" + _id, {
-          method: "DELETE",
-        }).then(function (res) {
-          if (res.ok) {
-            alert("Elemento borrado ");
-          } else if (res.status == 403) {
-            alert("Obra inexistente");
-          }
-        }, function (e) {
-          alert("Server Error");
-    });*/
+  const handleUpdateObra = (params) => {
+    //setRows(rows.filter((row) => row._id !== _id));
+    try {
+      //fetch("http://10.14.255.70:10205/api/create-obra", {
+      let body = {
+        id: params.id,
+        field: params.field,
+        value: params.value
+      }
+      // let body = new FormData();
+      // body.append('id', params.id);
+      // body.append('field', params.field);
+      // body.append('value', params.value);
+      // console.log(body);
+      fetch("http://189.205.248.189/marcokids/api/api/update-obra", {
+        method: "PUT",
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      }).then(function (res) {
+        console.log(res);
+        // if (res.ok) {
+        //   alert("Obra actualizada");
+        //   //navigate("/table");
+        // }
+      }, function (e) {
+        alert("Error en servidor");
+      });
+
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   const handleDeleteClick = (_id) => () => {
@@ -244,17 +186,17 @@ function Table() {
     /*let formData = new FormData();
     formData.append('id', _id);*/
     setRows(rows.filter((row) => row._id !== _id));
-    fetch("http://10.14.255.70:10205/api/delete-obra/" + _id, {
-    //fetch("http://localhost:8080/api/delete-obra/" + _id, {
-          method: "DELETE",
-        }).then(function (res) {
-          if (res.ok) {
-            alert("Elemento borrado ");
-          } else if (res.status == 403) {
-            alert("Obra inexistente");
-          }
-        }, function (e) {
-          alert("Server Error");
+    //fetch("http://http://localhost:8080/api/delete-obra/" + _id, {
+    fetch("http://189.205.248.189/marcokids/api/api/delete-obra/" + _id, {
+      method: "DELETE",
+    }).then(function (res) {
+      if (res.ok) {
+        alert("Elemento borrado ");
+      } else if (res.status == 403) {
+        alert("Obra inexistente");
+      }
+    }, function (e) {
+      alert("Server Error");
     });
   };
 
@@ -279,22 +221,27 @@ function Table() {
 
 
   return (
-    <div style={{ height: 1000, width: '100%', justifyContent: 'center', backgroundColor: 'rgba(165, 16, 108, 0.20)' }}>
+    <div style={{ height: '100%', width: '100%', justifyContent: 'center', backgroundColor: 'rgba(165, 16, 108, 0.20)' }}>
 
 
-      <SearchAppBar>
+      <SearchAppBar setSearchQuery={(value)=>{
+        // let newRows = rows.map(row =>{
+        //   return row.name.includes(value) || row.id.includes(value);
+        // })
+        // let newRows = (rows.filter((row) => row.nombre.toLowerCase() === value || row.zona.toLowerCase() === value));
+              // let newRows = (rows.filter((row) => row.nombre.toLowerCase() === value || row.zona.toLowerCase() === value));
 
-      </SearchAppBar>
-
+        //console.log(newRows)
+        }}/>
       <Box sx={{
         //color al header
-        height: 600, width: '100%', '& .super-app-theme--header': {
-          backgroundColor: 'rgba(165, 16, 108, .9)',
+        height: '100%', width: '100%', '& .super-app-theme--header': {
+          backgroundColor: '#fd5880',
           color: 'rgba(255, 255, 255, 1)',
-          
+
         },
         height: 750,
-        width: '100%', 
+        width: '100%',
         '& .actions': {
           color: 'text.secondary',
         },
@@ -302,42 +249,34 @@ function Table() {
           color: 'text.primary',
           fontWeight: 'bold',
         },
-        
+
 
       }}>
         <DataGrid
-
           rows={rows}
           columns={columns}
-          editMode="row"
+          //editMode="row"
           getRowId={(row) => row._id}
-          rowModesModel={rowModesModel}
-          onRowModesModelChange={(newModel) => setRowModesModel(newModel)}
-          onRowEditStart={handleRowEditStart}
-          onRowEditStop={handleRowEditStop}
-          processRowUpdate={processRowUpdate}
-          componentsProps={{
+          //experimentalFeatures={{ newEditingApi: true }}
+          /*componentsProps={{
             toolbar: { setRows, setRowModesModel },
-          }}
-          experimentalFeatures={{ newEditingApi: true }}
-          //checkboxSelection
-
+          }}*/
           //Color a las celdas
           sx={{
-            boxShadow: 2,
-            border: 2,
-            borderColor: 'rgba(165, 16, 108, 1)',
+            borderColor: '#E63E6B',
             '& .MuiDataGrid-cell:hover': {
               color: 'rgba(165, 16, 108, 1)',
             },
-            bgcolor: 'rgba(165, 16, 108, 0.10)',
+            bgcolor: '#f4ede7',
             '& .MuiDataGrid-cell:hover': {
               color: 'rgba(165, 16, 108, 0.30)',
             },
 
           }}
-
-
+          onCellEditCommit={(params) => {
+            setRowId(params.id)
+            handleUpdateObra(params);
+          }}
         />
       </Box>
 
