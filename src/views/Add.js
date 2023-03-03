@@ -41,19 +41,22 @@ function Add() {
   }
 
   const handleAdd = async () => {
-    let formData = new FormData();
-    formData.append('nombre', title);
-    formData.append('autor', autor);
-    //formData.append('latitud', latitud);
-    //formData.append('longitud', longitud);
-    formData.append('zona', zona);
-    formData.append('descripcion', descripcion);
-    formData.append('file', file);
 
-    try {
+
+    if( title && autor && zona && descripcion && file ){
+      let formData = new FormData();
+      formData.append('nombre', title);
+      formData.append('autor', autor);
+      //formData.append('latitud', latitud);
+      //formData.append('longitud', longitud);
+      formData.append('zona', zona);
+      formData.append('descripcion', descripcion);
+      formData.append('file', file);
+
+      try {
         console.log(formData);
         //fetch("http://10.14.255.70:10205/api/create-obra", {
-        fetch("http://localhost:8080/api/create-obra", {
+        fetch("http://189.205.248.189/marcokids/api/api/create-obra", {
           method: "POST",
           body: formData
         }).then(function (res) {
@@ -70,6 +73,10 @@ function Add() {
     } catch (err) {
       console.error(err);
     }
+    }else {
+      alert("Es necesario llenar todos los campos del formulario");
+    }
+
   };
 
   useEffect(() => {
@@ -258,7 +265,7 @@ function Add() {
             }}
           >
               <TextField
-              height="100"
+              height="100%"
               name="File"
               margin="dense"
               alt="File"

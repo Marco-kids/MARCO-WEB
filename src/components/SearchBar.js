@@ -6,6 +6,7 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
+import { ConnectingAirportsOutlined } from '@mui/icons-material';
 //import marcoLogo from '../assets/logo.png';
 
 
@@ -14,7 +15,7 @@ import SearchIcon from '@mui/icons-material/Search';
 
 const estilo = {
 
-  background : '#ed179b'
+  background : '#E63E6B'
 };
 
 const Search = styled('div')(({ theme }) => ({
@@ -59,12 +60,12 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-export default function SearchBar() {
+export default function SearchBar({setSearchQuery}) {
+
   return (
     <Box sx={{ flexGrow: 1,  }}>
       <AppBar position="static" style={estilo}>
         <Toolbar>
-        {/*<img src={marcoLogo} alt="marcoLogo" height={50} />*/}
           <Typography
             variant="h6"
             noWrap
@@ -80,6 +81,7 @@ export default function SearchBar() {
             <StyledInputBase
               placeholder="Search…"
               inputProps={{ 'aria-label': 'search' }}
+              onChange = {(e)=>{setSearchQuery(e.target.value)}}
             />
           </Search>
         </Toolbar>

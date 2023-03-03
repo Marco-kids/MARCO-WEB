@@ -31,12 +31,12 @@ function ModelRender() {
   }, []);
 
   return (
-    <div style={{ height: 1000, width: '100%' }}>
+    <div style={{ height: '100%', width: '100%' }}>
 
       
       <Box sx={{
         //color al header
-        height: 600, width: '100%', '& .super-app-theme--header': {
+        height: '100%', width: '100%', '& .super-app-theme--header': {
           backgroundColor: 'rgba(161, 43, 74, 1)',
           color: 'rgba(255, 255, 255, 1)'
           
