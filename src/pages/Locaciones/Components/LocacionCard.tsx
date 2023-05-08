@@ -9,7 +9,12 @@ import {
   CardTitle,
 } from "./LocacionCardStyle";
 
-const LocacionCard = (props: { id: number; titulo: string; img: any }) => {
+const LocacionCard = (props: {
+  id: number;
+  titulo: string;
+  img: any;
+  openModal: React.Dispatch<React.SetStateAction<boolean>>;
+}) => {
   return (
     <CardContainer container direction="column">
       <Grid item position="relative">
@@ -18,7 +23,10 @@ const LocacionCard = (props: { id: number; titulo: string; img: any }) => {
           justifyContent="center"
           alignItems="center"
         >
-          <Button sx={{ borderRadius: "50%", width: "3rem", height: "3rem" }}>
+          <Button
+            sx={{ borderRadius: "50%", width: "3rem", height: "3rem" }}
+            onClick={() => props.openModal(true)}
+          >
             <DeleteIcon
               sx={{
                 width: "2rem",

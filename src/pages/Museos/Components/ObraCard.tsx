@@ -37,7 +37,7 @@ const ObraCard = (props: { id: number; titulo: string; img: any }) => {
   return (
     <CardContainer container direction="column">
       <Grid item position="relative">
-        <CardIconContainer
+        {/* <CardIconContainer
           container
           justifyContent="center"
           alignItems="center"
@@ -49,7 +49,7 @@ const ObraCard = (props: { id: number; titulo: string; img: any }) => {
               color: "white",
             }}
           />
-        </CardIconContainer>
+        </CardIconContainer> */}
         <CardImage src={props.img} alt="" />
       </Grid>
       <Grid item alignSelf="center">

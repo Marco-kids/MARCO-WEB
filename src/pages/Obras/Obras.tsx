@@ -10,6 +10,7 @@ import { IconText } from "./ObrasStyle";
 import ObraCard from "./Components/ObraCard";
 
 import PalomaIMG from "../../Assets/paloma.jpg";
+import { Link } from "react-router-dom";
 
 const MUSEUM_OBRAS = [
   {
@@ -80,10 +81,12 @@ const Obras = () => {
         alignItems="center"
       >
         <GridTitle color="primary">Obras</GridTitle>
-        <Button variant="contained" sx={{ borderRadius: "2rem" }}>
-          <IconText>Agregar</IconText>
-          <AddIcon sx={{ width: "2rem", height: "2rem" }} />
-        </Button>
+        <Link to="/obras/create">
+          <Button variant="contained" sx={{ borderRadius: "2rem" }}>
+            <IconText>Agregar</IconText>
+            <AddIcon sx={{ width: "2rem", height: "2rem" }} />
+          </Button>
+        </Link>
       </GridTitleContainer>
       <Grid item container paddingTop="1rem" alignItems="center">
         <Typography paddingRight="1rem" fontSize="1.5rem" fontWeight="600">
@@ -100,20 +103,22 @@ const Obras = () => {
           {MUSEUM_OBRAS.map((obra) => {
             return (
               <Grid item xs={3}>
-                <Button
-                  sx={{
-                    width: "100%",
-                    padding: 0,
-                    borderRadius: "1rem",
-                  }}
-                >
-                  <ObraCard
-                    id={obra.id}
-                    titulo={obra.titulo}
-                    img={obra.img}
-                    descripcion={obra.descripcion}
-                  />
-                </Button>
+                <Link to={`/obras/${obra.id}`}>
+                  <Button
+                    sx={{
+                      width: "100%",
+                      padding: 0,
+                      borderRadius: "1rem",
+                    }}
+                  >
+                    <ObraCard
+                      id={obra.id}
+                      titulo={obra.titulo}
+                      img={obra.img}
+                      descripcion={obra.descripcion}
+                    />
+                  </Button>
+                </Link>
               </Grid>
             );
           })}

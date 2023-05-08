@@ -6,7 +6,8 @@ import Dashboard from "../pages/Dashboard/Dashboard";
 import Museos from "../pages/Museos/Museos";
 import Obras from "../pages/Obras/Obras";
 import Locaciones from "../pages/Locaciones/Locaciones";
-import MuseoFormulario from "../pages/Museos/MuseoFomrulario/MuseoFormulario";
+import MuseoFormulario from "../pages/Museos/MuseoFormulario/MuseoFormulario";
+import ObraFormulario from "../pages/Obras/ObraFormulario/ObraFormulario";
 
 export const AppBarContainer = styled(Box)(({ theme }) => ({
   padding: "1rem",
@@ -19,8 +20,9 @@ const AppRouter = () => {
       <Routes>
         {/* <Route path="/" element={<Dashboard />} /> */}
         <Route path="/" element={<Museos />} />
-        <Route path="/museo/:id" element={<MuseoFormulario />} />
+        <Route path="/museos/:id" element={<MuseoFormulario />} />
         <Route path="/obras" element={<Obras />} />
+        <Route path="/obras/:id" element={<ObraFormulario />} />
         <Route path="/locaciones" element={<Locaciones />} />
       </Routes>
     </AppBarContainer>

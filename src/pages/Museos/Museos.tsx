@@ -87,7 +87,7 @@ const Museos = () => {
         alignItems="center"
       >
         <GridTitle color="primary">Museos</GridTitle>
-        <Link to="/museo/create">
+        <Link to="/museos/create">
           <Button variant="contained" sx={{ borderRadius: "2rem" }}>
             <IconText>Agregar</IconText>
             <AddIcon sx={{ width: "2rem", height: "2rem" }} />
@@ -96,20 +96,22 @@ const Museos = () => {
       </GridTitleContainer>
       <Grid item container spacing={4} padding="1.5rem 0 0 0">
         <Grid item xs={3}>
-          <Button
-            sx={{
-              width: "100%",
-              padding: 0,
-              borderRadius: "1rem",
-            }}
-          >
-            <MuseoCard
-              id={MUSEOS[0].id}
-              titulo={MUSEOS[0].nombre}
-              img={MUSEOS[0].img}
-              estatus={MUSEOS[0].estatus}
-            />
-          </Button>
+          <Link to={`/museos/${MUSEOS[0].id}`}>
+            <Button
+              sx={{
+                width: "100%",
+                padding: 0,
+                borderRadius: "1rem",
+              }}
+            >
+              <MuseoCard
+                id={MUSEOS[0].id}
+                titulo={MUSEOS[0].nombre}
+                img={MUSEOS[0].img}
+                estatus={MUSEOS[0].estatus}
+              />
+            </Button>
+          </Link>
         </Grid>
         <Grid item container xs={9} direction="column">
           <Grid item container direction="column">
@@ -122,8 +124,10 @@ const Museos = () => {
               {MUSEUM_OBRAS.map((obra) => {
                 return (
                   <Grid item xs={3}>
+                    {/* <Link to={`/obras/${obra.id}`}> */}
                     <Button
                       sx={{ padding: 0, borderRadius: "1rem", width: "100%" }}
+                      disabled
                     >
                       <ObraCard
                         id={obra.id}
@@ -131,6 +135,7 @@ const Museos = () => {
                         img={obra.img}
                       />
                     </Button>
+                    {/* </Link> */}
                   </Grid>
                 );
               })}
@@ -153,6 +158,7 @@ const Museos = () => {
                   <Grid item xs={3}>
                     <Button
                       sx={{ padding: 0, borderRadius: "1rem", width: "100%" }}
+                      disabled
                     >
                       <LocacionesCard
                         id={obra.id}

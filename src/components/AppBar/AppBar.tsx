@@ -11,6 +11,8 @@ import { ImageContainer, LogoIconSmall } from "../../styles/Styles";
 import { Button, Grid, Typography } from "@mui/material";
 import theme from "../../Utils/Theme";
 
+import MarcoLogo from "../../Assets/MarcoLogo.png";
+
 const drawerWidth = 180;
 
 const navbarItems = [
@@ -44,7 +46,7 @@ const Navbar = () => {
           <Grid container alignItems="flex-end">
             <Grid item>
               <ImageContainer paddingRight="0.2rem" marginLeft="-0.5rem">
-                <LogoIconSmall src="./logo.png" alt="recsports logo" />
+                <LogoIconSmall src={MarcoLogo} alt="Museo Marco logo" />
               </ImageContainer>
             </Grid>
             <Grid item>
