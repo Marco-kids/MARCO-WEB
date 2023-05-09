@@ -2,6 +2,7 @@ import React from "react";
 import { Grid, Typography } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import CheckIcon from "@mui/icons-material/Check";
+import ClearIcon from "@mui/icons-material/Clear";
 import styled from "@emotion/styled";
 
 const CardContainer = styled(Grid)(({ theme }) => ({
@@ -34,11 +35,10 @@ const CardTitle = styled(Typography)(({ theme }) => ({
   textTransform: "none",
 }));
 
-const CardStatus = styled(Grid)(({ theme }) => ({
+const CardIsActive = styled(Grid)(({ theme }) => ({
   position: "absolute",
   top: "1rem",
   left: "1rem",
-  backgroundColor: "#3BB98C",
   padding: "0.3rem 1rem 0.3rem 0.5rem",
   borderRadius: "1rem",
   textTransform: "none",
@@ -49,7 +49,7 @@ const MuseoCard = (props: {
   id: string;
   titulo: string;
   img: string;
-  estatus: boolean;
+  isActive: boolean;
 }) => {
   return (
     <CardContainer container direction="column">
@@ -68,21 +68,41 @@ const MuseoCard = (props: {
           />
         </CardIconContainer>
 
-        <CardStatus container alignItems="center" width="auto">
+        <CardIsActive
+          container
+          alignItems="center"
+          width="auto"
+          sx={
+            props.isActive
+              ? { backgroundColor: "#3BB98C" }
+              : { backgroundColor: "#B10734" }
+          }
+        >
           <Grid item>
-            <CheckIcon
-              sx={{
-                width: "1.5rem",
-                height: "1.5rem",
-                color: "white",
-                margin: "-0.3rem 0 -0.4rem 0",
-              }}
-            />
+            {props.isActive ? (
+              <CheckIcon
+                sx={{
+                  width: "1.5rem",
+                  height: "1.5rem",
+                  color: "white",
+                  margin: "-0.3rem 0 -0.4rem 0",
+                }}
+              />
+            ) : (
+              <ClearIcon
+                sx={{
+                  width: "1.5rem",
+                  height: "1.5rem",
+                  color: "white",
+                  margin: "-0.3rem 0 -0.4rem 0",
+                }}
+              />
+            )}
           </Grid>
           <Grid item paddingLeft="0.3rem">
-            <Typography>Activo</Typography>
+            <Typography>{props.isActive ? "Activo" : "Inactivo"}</Typography>
           </Grid>
-        </CardStatus>
+        </CardIsActive>
 
         <CardImage src={props.img} alt="" />
       </Grid>

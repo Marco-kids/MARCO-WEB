@@ -17,8 +17,12 @@ import { makeImageURL } from "../../Utils/Parser";
 
 const Obras = () => {
   const [openDelete, setOpenDelete] = useState(false);
+
   const [locaciones, setLocaciones] = useState<Locacion[]>([]);
+  const [showLocaciones, setShowLocacion] = useState<Locacion[]>([]);
   const [selectedLocacion, setSelectedLocacion] = useState<Locacion>();
+
+  const [searchTerm, setSearchTerm] = useState<string>("");
 
   const fetchLocaciones = async () => {
     const response = await getAllLocaciones();
@@ -32,8 +36,25 @@ const Obras = () => {
         ARWorldMap: "",
       });
     }
+
     setLocaciones(listaLocaciones);
+    setShowLocacion(listaLocaciones);
   };
+
+  const searchLocaciones = async () => {
+    let listaLocaciones: Locacion[] = [];
+    for (let i = 0; i < locaciones.length; i++) {
+      if (locaciones[i].nombre.includes(searchTerm)) {
+        listaLocaciones.push(locaciones[i]);
+      }
+    }
+
+    setShowLocacion(listaLocaciones);
+  };
+
+  useEffect(() => {
+    searchLocaciones();
+  }, [searchTerm]);
 
   useEffect(() => {
     fetchLocaciones();
@@ -71,11 +92,12 @@ const Obras = () => {
           id="outlined-basic"
           variant="outlined"
           placeholder="Escribe..."
+          onChange={(e) => setSearchTerm(e.target.value)}
         />
       </Grid>
       <Grid item>
         <Grid container spacing={5} paddingTop="1rem">
-          {locaciones.map((locacion) => {
+          {showLocaciones.map((locacion) => {
             return (
               <Grid item xs={3}>
                 <LocacionCard
