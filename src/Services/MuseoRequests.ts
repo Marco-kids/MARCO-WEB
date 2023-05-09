@@ -33,3 +33,12 @@ export const deleteMuseo = async (_id: string) => {
     url: url,
   });
 };
+
+export const activateMuseo = async (_id: string) => {
+  const url = `http://189.205.248.189/marcokids/api/api/museo/activate/${_id}`;
+
+  axios({
+    method: "PUT",
+    url: url,
+  });
+};

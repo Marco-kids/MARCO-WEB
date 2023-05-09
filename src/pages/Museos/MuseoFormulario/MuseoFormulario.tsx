@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useEffect, useState } from "react";
+import React, { ChangeEvent, useEffect, useRef, useState } from "react";
 import { useParams } from "react-router";
 import {
   GridPageContainer,
@@ -27,6 +27,7 @@ import { Locacion, Museo, Obra } from "../../../Types/Types";
 import { getAllObras } from "../../../Services/ObrasRequests";
 import { getAllLocaciones } from "../../../Services/LocacionesRequests";
 import {
+  activateMuseo,
   deleteMuseo,
   getMuseoById,
   guardarMuseo,
@@ -50,6 +51,7 @@ const MuseoFormulario = () => {
 
   const navigate = useNavigate();
   const params = useParams();
+  let initialActivate = useRef(false);
 
   useEffect(() => {
     if (id === "create") {
@@ -60,6 +62,10 @@ const MuseoFormulario = () => {
 
     getAllValues();
   }, [id]);
+
+  useEffect(() => {
+    console.log(isActive);
+  }, [isActive]);
 
   const getAllValues = async () => {
     const obras = await getAllObras();
@@ -72,19 +78,21 @@ const MuseoFormulario = () => {
   const getMuseo = async () => {
     const museo: Museo = await getMuseoById(params.id!);
 
-    let listaObras = [];
+    let listaObras: string[] = [];
     for (let i = 0; i < museo.obras.length; i++) {
       listaObras.push(museo.obras[i].nombre);
     }
 
-    let listaLocaciones = [];
+    let listaLocaciones: string[] = [];
     for (let i = 0; i < museo.locations.length; i++) {
       listaLocaciones.push(museo.locations[i].nombre);
     }
 
+    initialActivate.current = museo.isActive;
     setNombre(museo.nombre);
     setObrasName(listaObras);
     setLocacionesName(listaLocaciones);
+    setIsActive(museo.isActive);
   };
 
   const handleChangeObra = (event: SelectChangeEvent<typeof obrasName>) => {
@@ -165,11 +173,28 @@ const MuseoFormulario = () => {
     formData.append("imagen", imagen);
 
     await guardarMuseo(formData);
+
+    if (isActive === true) {
+      await onActivateMuseum();
+    }
     setOpen(true);
+  };
+
+  const onEditMuseo = async () => {
+    if (initialActivate.current === false && isActive === true) {
+      onActivateMuseum();
+    }
   };
 
   const onDeleteMuseo = async () => {
     await deleteMuseo(id!);
+
+    onCloseModal();
+  };
+
+  const onActivateMuseum = async () => {
+    await activateMuseo(id!);
+
     onCloseModal();
   };
 
@@ -285,7 +310,10 @@ const MuseoFormulario = () => {
             <Typography fontSize="1.5rem" fontWeight="700">
               Activo
             </Typography>
-            <Switch />
+            <Switch
+              checked={isActive}
+              onChange={() => setIsActive(!isActive)}
+            />
           </Grid>
         </Grid>
 
@@ -346,7 +374,7 @@ const MuseoFormulario = () => {
             variant="contained"
             color="primary"
             sx={{ borderRadius: "1rem" }}
-            onClick={() => onGuardarMuseo()}
+            onClick={editarFlag ? () => onEditMuseo() : () => onGuardarMuseo()}
           >
             <Typography fontSize="2rem" textTransform="none" fontWeight="700">
               Guardar

@@ -5,21 +5,12 @@ import {
   GridTitleContainer,
 } from "../../Dashboard/DashboardStyles";
 import { useNavigate, useParams } from "react-router";
-import {
-  Button,
-  Grid,
-  Input,
-  Modal,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Button, Grid, Modal, TextField, Typography } from "@mui/material";
 import { GuardarModal } from "../../Museos/MuseosStyles";
 import theme from "../../../Utils/Theme";
 
 import {
   deleteObra,
-  getImagen,
-  getModelo,
   getObraByID,
   guardarObra,
   updateObra,
@@ -58,7 +49,7 @@ const ObraFormulario = () => {
     setDescripcion(obra.descripcion);
 
     setPreviewImagen(
-      `http://localhost:8080/uploads/${obra.imagen.slice(
+      `http://189.205.248.189/marcokids/api/uploads/${obra.imagen.slice(
         obra.imagen.indexOf("s") + 2
       )}`
     );

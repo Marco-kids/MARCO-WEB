@@ -16,6 +16,8 @@ import { makeImageURL } from "../../Utils/Parser";
 
 const Obras = () => {
   const [allObras, setAllObras] = useState<Obra[]>([]);
+  const [showObras, setShowObras] = useState<Obra[]>([]);
+  const [searchTerm, setSearchTerm] = useState<string>("");
 
   const fetchObras = async () => {
     const results = await getAllObras();
@@ -32,11 +34,27 @@ const Obras = () => {
       });
     }
     setAllObras(listaObras);
+    setShowObras(listaObras);
+  };
+
+  const searchObras = async () => {
+    let listaObras: Obra[] = [];
+    for (let i = 0; i < allObras.length; i++) {
+      if (allObras[i].nombre.includes(searchTerm)) {
+        listaObras.push(allObras[i]);
+      }
+    }
+
+    setShowObras(listaObras);
   };
 
   useEffect(() => {
     fetchObras();
   }, []);
+
+  useEffect(() => {
+    searchObras();
+  }, [searchTerm]);
 
   return (
     <GridPageContainer container direction="column">
@@ -62,11 +80,12 @@ const Obras = () => {
           id="outlined-basic"
           variant="outlined"
           placeholder="Escribe..."
+          onChange={(e) => setSearchTerm(e.target.value)}
         />
       </Grid>
       <Grid item>
         <Grid container spacing={5} paddingTop="1rem">
-          {allObras.map((obra) => {
+          {showObras.map((obra) => {
             return (
               <Grid item xs={3}>
                 <Link to={`/obras/${obra._id}`}>

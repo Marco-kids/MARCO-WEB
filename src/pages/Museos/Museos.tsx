@@ -96,7 +96,7 @@ const Museos = () => {
                     id={museo._id}
                     titulo={museo.nombre}
                     img={museo.imagen}
-                    estatus={museo.isActive}
+                    isActive={museo.isActive}
                   />
                 </Button>
               </Link>

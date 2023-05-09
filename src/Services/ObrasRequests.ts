@@ -18,7 +18,7 @@ export const getObraByID = async (_id: string) => {
   const allObras = await getAllObras();
 
   for (let i = 0; i < allObras.data.length; i++) {
-    if (allObras.data[i]._id == _id) {
+    if (allObras.data[i]._id === _id) {
       return allObras.data[i];
     }
   }
@@ -51,7 +51,7 @@ export const updateObra = () => {
 };
 
 export const getModelo = async (modelo: string) => {
-  const url = `http://localhost:8080/uploads/${modelo.slice(
+  const url = `http://http://189.205.248.189/marcokids/api/api/:8080/uploads/${modelo.slice(
     modelo.indexOf("s") + 2
   )}`;
 
@@ -62,7 +62,7 @@ export const getModelo = async (modelo: string) => {
 };
 
 export const getImagen = async (imagen: string) => {
-  const url = `http://localhost:8080/uploads/${imagen.slice(
+  const url = `http://http://189.205.248.189/marcokids/api/api/:8080/uploads/${imagen.slice(
     imagen.indexOf("s") + 2
   )}`;
 
