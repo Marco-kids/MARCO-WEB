@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import {
   GridPageContainer,
   GridTitle,
@@ -13,10 +13,18 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-
-import PalomaIMG from "../../../Assets/paloma.jpg";
 import { GuardarModal } from "../../Museos/MuseosStyles";
 import theme from "../../../Utils/Theme";
+
+import {
+  deleteObra,
+  getImagen,
+  getModelo,
+  getObraByID,
+  guardarObra,
+  updateObra,
+} from "../../../Services/ObrasRequests";
+import { Obra } from "../../../Types/Types";
 
 const ObraFormulario = () => {
   const { id } = useParams();
@@ -24,19 +32,72 @@ const ObraFormulario = () => {
   const [open, setOpen] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
 
+  // Informacion obra
+  const [nombre, setNombre] = useState("");
+  const [autor, setAutor] = useState("");
+  const [descripcion, setDescripcion] = useState("");
+  const [file, setFile] = useState<any>();
+  const [imagen, setImagen] = useState<any>();
+  const [previewImagen, setPreviewImagen] = useState<string>();
+
   const navigate = useNavigate();
+  const params = useParams();
 
   useEffect(() => {
     if (id === "create") {
       setEditarFlag(false);
+    } else {
+      getObra();
     }
   }, [id]);
 
-  const onFileDrop = () => {
-    console.log("file dropped");
+  const getObra = async () => {
+    const obra: Obra = await getObraByID(params.id!);
+    setNombre(obra.nombre);
+    setAutor(obra.autor);
+    setDescripcion(obra.descripcion);
+
+    setPreviewImagen(
+      `http://localhost:8080/uploads/${obra.imagen.slice(
+        obra.imagen.indexOf("s") + 2
+      )}`
+    );
   };
 
-  const onCloseModal = () => {
+  const handleFileInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.currentTarget.files![0];
+    setFile(file);
+  };
+
+  const handleImageInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const imagen = e.currentTarget.files![0];
+    setImagen(imagen);
+  };
+
+  const onDeleteObra = async () => {
+    await deleteObra(id!);
+    onCloseModal();
+  };
+
+  const onGuardarObra = async () => {
+    let formData = new FormData();
+
+    formData.append("nombre", nombre);
+    formData.append("autor", autor);
+    formData.append("descripcion", descripcion);
+    formData.append("file", file);
+    formData.append("imagen", imagen);
+
+    await guardarObra(formData);
+    setOpen(true);
+  };
+
+  const onUpdateObra = async () => {
+    await updateObra();
+    setOpen(true);
+  };
+
+  const onCloseModal = async () => {
     navigate("/obras");
   };
 
@@ -71,6 +132,22 @@ const ObraFormulario = () => {
               id="outlined-basic"
               variant="outlined"
               placeholder="Escribe..."
+              onChange={(e) => setNombre(e.target.value)}
+              value={nombre}
+              fullWidth
+            />
+          </Grid>
+
+          <Grid item container paddingBottom="1rem">
+            <Typography fontSize="1.5rem" fontWeight="700">
+              Autor
+            </Typography>
+            <TextField
+              id="outlined-basic"
+              variant="outlined"
+              placeholder="Escribe..."
+              value={autor}
+              onChange={(e) => setAutor(e.target.value)}
               fullWidth
             />
           </Grid>
@@ -82,52 +159,70 @@ const ObraFormulario = () => {
             <TextField
               id="outlined-multiline-static"
               multiline
-              rows={4}
+              rows={2}
               placeholder="Escribe..."
               fullWidth
+              value={descripcion}
+              onChange={(e) => setDescripcion(e.target.value)}
             />
           </Grid>
 
-          <Grid item container paddingBottom="1rem">
-            <Typography fontSize="1.5rem" fontWeight="700">
-              Modelo
-            </Typography>
+          <Grid item container paddingBottom="1rem" direction="column">
+            <Grid item>
+              <Typography fontSize="1.5rem" fontWeight="700">
+                Modelo
+              </Typography>
+            </Grid>
+            <Grid item>
+              <TextField
+                name="File"
+                margin="dense"
+                type="file"
+                onChange={handleFileInputChange}
+                sx={{
+                  height: "100%",
+                  fontSize: "2rem",
+                  cursor: "pointer",
+                }}
+                fullWidth
+                disabled={editarFlag}
+              />
+            </Grid>
 
-            <Input
-              type="file"
-              name="hola"
-              onChange={onFileDrop}
-              style={{
-                width: "100%",
-                fontSize: "1.5rem",
-                cursor: "pointer",
-              }}
-            ></Input>
-
-            <Typography fontSize="1rem" fontWeight="500">
-              El modelo debe ser un archivo .USDZ válido
-            </Typography>
+            <Grid item>
+              <Typography fontSize="1rem" fontWeight="500">
+                El modelo debe ser un archivo .USDZ válido
+              </Typography>
+            </Grid>
           </Grid>
 
-          <Grid item container paddingBottom="1rem">
-            <Typography fontSize="1.5rem" fontWeight="700">
-              Imagen
-            </Typography>
+          <Grid item container paddingBottom="1rem" direction="column">
+            <Grid item>
+              <Typography fontSize="1.5rem" fontWeight="700">
+                Imagen
+              </Typography>
+            </Grid>
+            <Grid item>
+              <TextField
+                name="File"
+                margin="dense"
+                type="file"
+                onChange={handleImageInputChange}
+                sx={{
+                  height: "100%",
+                  fontSize: "2rem",
+                  cursor: "pointer",
+                }}
+                fullWidth
+                disabled={editarFlag}
+              />
+            </Grid>
 
-            <Input
-              type="file"
-              name="hola"
-              onChange={onFileDrop}
-              style={{
-                width: "100%",
-                fontSize: "1.5rem",
-                cursor: "pointer",
-              }}
-            ></Input>
-
-            <Typography fontSize="1rem" fontWeight="500">
-              Toma una captura de pantalla del modelo y subela aqui
-            </Typography>
+            <Grid item>
+              <Typography fontSize="1rem" fontWeight="500">
+                Toma una captura de pantalla del modelo y subela aqui
+              </Typography>
+            </Grid>
           </Grid>
         </Grid>
         <Grid
@@ -145,15 +240,35 @@ const ObraFormulario = () => {
           </Grid>
 
           <Grid item container justifyContent="center">
-            <img
-              src={PalomaIMG}
-              style={{
-                width: "70%",
-                objectFit: "cover",
-                borderRadius: "1rem",
-                boxShadow: "0.2rem 0.2rem 1rem 0.2rem rgba(0,0,0,0.2)",
-              }}
-            />
+            {previewImagen ? (
+              <img
+                src={previewImagen}
+                style={{
+                  width: "80%",
+                  height: "50vh",
+                  objectFit: "cover",
+                  borderRadius: "1rem",
+                  boxShadow: "0.2rem 0.2rem 1rem 0.2rem rgba(0,0,0,0.2)",
+                }}
+              />
+            ) : (
+              ""
+            )}
+
+            {imagen ? (
+              <img
+                src={URL.createObjectURL(imagen)}
+                style={{
+                  width: "80%",
+                  height: "50vh",
+                  objectFit: "cover",
+                  borderRadius: "1rem",
+                  boxShadow: "0.2rem 0.2rem 1rem 0.2rem rgba(0,0,0,0.2)",
+                }}
+              />
+            ) : (
+              ""
+            )}
           </Grid>
         </Grid>
 
@@ -177,7 +292,7 @@ const ObraFormulario = () => {
             variant="contained"
             color="primary"
             sx={{ borderRadius: "1rem" }}
-            onClick={() => setOpen(true)}
+            onClick={editarFlag ? () => onUpdateObra() : () => onGuardarObra()}
           >
             <Typography fontSize="2rem" textTransform="none" fontWeight="700">
               Guardar
@@ -221,12 +336,12 @@ const ObraFormulario = () => {
               fontWeight="700"
               color={theme.palette.primary.main}
             >
-              PALOMA
+              {nombre}
             </Typography>
           </Typography>
 
           <Grid container justifyContent="flex-end">
-            <Button variant="contained" onClick={() => onCloseModal()}>
+            <Button variant="contained" onClick={() => onDeleteObra()}>
               <Typography fontSize="1.5rem" textTransform="none">
                 Confirmar
               </Typography>

@@ -33,7 +33,7 @@ const CardTitle = styled(Typography)(({ theme }) => ({
   textTransform: "none",
 }));
 
-const LocacionesCard = (props: { id: number; titulo: string; img: any }) => {
+const LocacionesCard = (props: { id: string; titulo: string; img: any }) => {
   return (
     <CardContainer container direction="column">
       <Grid item position="relative">

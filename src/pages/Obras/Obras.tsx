@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   GridPageContainer,
   GridTitle,
@@ -8,70 +8,36 @@ import { Button, Grid, TextField, Typography } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import { IconText } from "./ObrasStyle";
 import ObraCard from "./Components/ObraCard";
-
-import PalomaIMG from "../../Assets/paloma.jpg";
 import { Link } from "react-router-dom";
 
-const MUSEUM_OBRAS = [
-  {
-    id: 1,
-    titulo: "Paloma",
-    img: PalomaIMG,
-    descripcion:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua",
-  },
-  {
-    id: 2,
-    titulo: "Paloma",
-    img: PalomaIMG,
-    descripcion:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua",
-  },
-  {
-    id: 3,
-    titulo: "Paloma",
-    img: PalomaIMG,
-    descripcion:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua",
-  },
-  {
-    id: 4,
-    titulo: "Paloma",
-    img: PalomaIMG,
-    descripcion:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua",
-  },
-  {
-    id: 5,
-    titulo: "Paloma",
-    img: PalomaIMG,
-    descripcion:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua",
-  },
-  {
-    id: 6,
-    titulo: "Paloma",
-    img: PalomaIMG,
-    descripcion:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua",
-  },
-  {
-    id: 7,
-    titulo: "Paloma",
-    img: PalomaIMG,
-    descripcion:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua",
-  },
-  {
-    id: 8,
-    titulo: "Paloma",
-    img: PalomaIMG,
-    descripcion:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua",
-  },
-];
+import { getAllObras } from "../../Services/ObrasRequests";
+import { Obra } from "../../Types/Types";
+import { makeImageURL } from "../../Utils/Parser";
 
 const Obras = () => {
+  const [allObras, setAllObras] = useState<Obra[]>([]);
+
+  const fetchObras = async () => {
+    const results = await getAllObras();
+
+    let listaObras: Obra[] = [];
+    for (let i = 0; i < results.data.length; i++) {
+      listaObras.push({
+        autor: results.data[i].autor,
+        descripcion: results.data[i].descripcion,
+        modelo: results.data[i].modelo,
+        nombre: results.data[i].nombre,
+        _id: results.data[i]._id,
+        imagen: makeImageURL(results.data[i].imagen),
+      });
+    }
+    setAllObras(listaObras);
+  };
+
+  useEffect(() => {
+    fetchObras();
+  }, []);
+
   return (
     <GridPageContainer container direction="column">
       <GridTitleContainer
@@ -100,10 +66,10 @@ const Obras = () => {
       </Grid>
       <Grid item>
         <Grid container spacing={5} paddingTop="1rem">
-          {MUSEUM_OBRAS.map((obra) => {
+          {allObras.map((obra) => {
             return (
               <Grid item xs={3}>
-                <Link to={`/obras/${obra.id}`}>
+                <Link to={`/obras/${obra._id}`}>
                   <Button
                     sx={{
                       width: "100%",
@@ -112,9 +78,9 @@ const Obras = () => {
                     }}
                   >
                     <ObraCard
-                      id={obra.id}
-                      titulo={obra.titulo}
-                      img={obra.img}
+                      id={obra._id}
+                      titulo={obra.nombre}
+                      imagen={obra.imagen}
                       descripcion={obra.descripcion}
                     />
                   </Button>

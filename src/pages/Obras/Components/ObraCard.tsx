@@ -10,9 +10,9 @@ import {
 } from "./ObraCardStyles";
 
 const ObraCard = (props: {
-  id: number;
+  id: string;
   titulo: string;
-  img: any;
+  imagen: string;
   descripcion: string;
 }) => {
   return (
@@ -31,7 +31,7 @@ const ObraCard = (props: {
             }}
           />
         </CardIconContainer>
-        <CardImage src={props.img} alt="" />
+        <CardImage src={props.imagen} alt="" />
       </Grid>
       <Grid item alignSelf="center">
         <CardTitle>{props.titulo}</CardTitle>

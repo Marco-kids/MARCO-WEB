@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import { useParams } from "react-router";
 import {
   GridPageContainer,
@@ -23,52 +23,69 @@ import {
 import { GuardarModal, SelectedOption } from "../MuseosStyles";
 import theme from "../../../Utils/Theme";
 import { useNavigate } from "react-router-dom";
-
-const OBRAS_ARRAY = [
-  "Paloma",
-  "Pirinola",
-  "Volcanica",
-  "Piramide",
-  "Dodecaedro",
-  "Prisma",
-  "Obra 7",
-  "Obra 8",
-  "Obra 9",
-  "Obra 10",
-  "Obra 11",
-  "Obra 12",
-];
-
-const LOCACIONES_ARRAY = [
-  "Marco - Patio 1",
-  "Marco - Patio 2",
-  "Marco - Patio 3",
-  "Marco - Patio 4",
-  "Marco - Patio 5",
-  "Marco - Patio 6",
-  "Marco - Patio 7",
-  "Marco - Patio 8",
-  "Marco - Patio 9",
-  "Marco - Patio 10",
-  "Marco - Patio 11",
-  "Marco - Patio 12",
-];
+import { Locacion, Museo, Obra } from "../../../Types/Types";
+import { getAllObras } from "../../../Services/ObrasRequests";
+import { getAllLocaciones } from "../../../Services/LocacionesRequests";
+import {
+  deleteMuseo,
+  getMuseoById,
+  guardarMuseo,
+} from "../../../Services/MuseoRequests";
 
 const MuseoFormulario = () => {
   const { id } = useParams();
   const [editarFlag, setEditarFlag] = useState(true);
+
+  const [allObras, setAllObras] = useState<Obra[]>([]);
+  const [allLocations, setAllLocations] = useState<Locacion[]>([]);
+
+  const [nombre, setNombre] = useState<string>("");
   const [obrasName, setObrasName] = useState<string[]>([]);
   const [locacionesName, setLocacionesName] = useState<string[]>([]);
+  const [imagen, setImagen] = useState<any>();
+  const [isActive, setIsActive] = useState<boolean>(false);
+
   const [open, setOpen] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
 
   const navigate = useNavigate();
+  const params = useParams();
 
   useEffect(() => {
     if (id === "create") {
       setEditarFlag(false);
+    } else {
+      getMuseo();
     }
+
+    getAllValues();
   }, [id]);
+
+  const getAllValues = async () => {
+    const obras = await getAllObras();
+    const locaciones = await getAllLocaciones();
+
+    setAllObras(obras.data);
+    setAllLocations(locaciones.data);
+  };
+
+  const getMuseo = async () => {
+    const museo: Museo = await getMuseoById(params.id!);
+
+    let listaObras = [];
+    for (let i = 0; i < museo.obras.length; i++) {
+      listaObras.push(museo.obras[i].nombre);
+    }
+
+    let listaLocaciones = [];
+    for (let i = 0; i < museo.locations.length; i++) {
+      listaLocaciones.push(museo.locations[i].nombre);
+    }
+
+    setNombre(museo.nombre);
+    setObrasName(listaObras);
+    setLocacionesName(listaLocaciones);
+  };
 
   const handleChangeObra = (event: SelectChangeEvent<typeof obrasName>) => {
     const {
@@ -90,8 +107,9 @@ const MuseoFormulario = () => {
     );
   };
 
-  const onFileDrop = () => {
-    console.log("file dropped");
+  const handleImageInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const imagen = e.currentTarget.files![0];
+    setImagen(imagen);
   };
 
   const getSelectedObras = () => {
@@ -118,6 +136,41 @@ const MuseoFormulario = () => {
     });
 
     return listaLocaciones;
+  };
+
+  const onGuardarMuseo = async () => {
+    const listaObrasId: string[] = [];
+    const listaLocacionesId: string[] = [];
+
+    for (let i = 0; i < obrasName.length; i++) {
+      for (let j = 0; j < allObras.length; j++) {
+        if (obrasName[i] === allObras[j].nombre) {
+          listaObrasId.push(`"${allObras[j]._id}"`);
+        }
+      }
+    }
+
+    for (let i = 0; i < locacionesName.length; i++) {
+      for (let j = 0; j < allLocations.length; j++) {
+        if (locacionesName[i] === allLocations[j].nombre) {
+          listaLocacionesId.push(`"${allLocations[j]._id}"`);
+        }
+      }
+    }
+
+    let formData = new FormData();
+    formData.append("nombre", nombre);
+    formData.append("obras", `[${listaObrasId}]`);
+    formData.append("locations", `[${listaLocacionesId}]`);
+    formData.append("imagen", imagen);
+
+    await guardarMuseo(formData);
+    setOpen(true);
+  };
+
+  const onDeleteMuseo = async () => {
+    await deleteMuseo(id!);
+    onCloseModal();
   };
 
   const onCloseModal = () => {
@@ -154,6 +207,8 @@ const MuseoFormulario = () => {
               id="outlined-basic"
               variant="outlined"
               placeholder="Escribe..."
+              value={nombre}
+              onChange={(e) => setNombre(e.target.value)}
               fullWidth
             />
           </Grid>
@@ -172,10 +227,10 @@ const MuseoFormulario = () => {
                 renderValue={(selected) => selected.join(", ")}
                 fullWidth
               >
-                {OBRAS_ARRAY.map((obraName) => (
-                  <MenuItem key={obraName} value={obraName}>
-                    <Checkbox checked={obrasName.indexOf(obraName) > -1} />
-                    <ListItemText primary={obraName} />
+                {allObras.map((obra) => (
+                  <MenuItem key={obra._id} value={obra.nombre}>
+                    <Checkbox checked={obrasName.indexOf(obra.nombre) > -1} />
+                    <ListItemText primary={obra.nombre} />
                   </MenuItem>
                 ))}
               </Select>
@@ -196,12 +251,12 @@ const MuseoFormulario = () => {
                 renderValue={(selected) => selected.join(", ")}
                 fullWidth
               >
-                {LOCACIONES_ARRAY.map((locacionName) => (
-                  <MenuItem key={locacionName} value={locacionName}>
+                {allLocations.map((locacion) => (
+                  <MenuItem key={locacion._id} value={locacion.nombre}>
                     <Checkbox
-                      checked={locacionesName.indexOf(locacionName) > -1}
+                      checked={locacionesName.indexOf(locacion.nombre) > -1}
                     />
-                    <ListItemText primary={locacionName} />
+                    <ListItemText primary={locacion.nombre} />
                   </MenuItem>
                 ))}
               </Select>
@@ -216,12 +271,13 @@ const MuseoFormulario = () => {
             <Input
               type="file"
               name="hola"
-              onChange={onFileDrop}
+              onChange={handleImageInputChange}
               style={{
                 width: "100%",
                 fontSize: "1.5rem",
                 cursor: "pointer",
               }}
+              disabled={editarFlag}
             ></Input>
           </Grid>
 
@@ -290,7 +346,7 @@ const MuseoFormulario = () => {
             variant="contained"
             color="primary"
             sx={{ borderRadius: "1rem" }}
-            onClick={() => setOpen(true)}
+            onClick={() => onGuardarMuseo()}
           >
             <Typography fontSize="2rem" textTransform="none" fontWeight="700">
               Guardar
@@ -327,19 +383,24 @@ const MuseoFormulario = () => {
         aria-describedby="modal-modal-description"
       >
         <GuardarModal>
-          <Typography fontSize="2rem" display="flex" paddingBottom="1rem">
+          <Typography
+            fontSize="2rem"
+            display="flex"
+            flexDirection="column"
+            paddingBottom="1rem"
+          >
             Borrar museo:&nbsp;
             <Typography
               fontSize="2rem"
               fontWeight="700"
               color={theme.palette.primary.main}
             >
-              MARCO
+              {nombre}
             </Typography>
           </Typography>
 
           <Grid container justifyContent="flex-end">
-            <Button variant="contained" onClick={() => onCloseModal()}>
+            <Button variant="contained" onClick={() => onDeleteMuseo()}>
               <Typography fontSize="1.5rem" textTransform="none">
                 Confirmar
               </Typography>

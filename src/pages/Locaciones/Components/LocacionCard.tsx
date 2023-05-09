@@ -1,6 +1,5 @@
 import React from "react";
 import { Button, Grid } from "@mui/material";
-import PalomaIMG from "../../../Assets/paloma.jpg";
 import DeleteIcon from "@mui/icons-material/Delete";
 import {
   CardContainer,
@@ -8,12 +7,13 @@ import {
   CardImage,
   CardTitle,
 } from "./LocacionCardStyle";
+import { Locacion } from "../../../Types/Types";
 
 const LocacionCard = (props: {
-  id: number;
+  id: string;
   titulo: string;
-  img: any;
-  openModal: React.Dispatch<React.SetStateAction<boolean>>;
+  imagen: string;
+  openModal: (locacion: Locacion) => void;
 }) => {
   return (
     <CardContainer container direction="column">
@@ -25,7 +25,14 @@ const LocacionCard = (props: {
         >
           <Button
             sx={{ borderRadius: "50%", width: "3rem", height: "3rem" }}
-            onClick={() => props.openModal(true)}
+            onClick={() =>
+              props.openModal({
+                _id: props.id,
+                nombre: props.titulo,
+                screenshot: props.imagen,
+                ARWorldMap: "",
+              })
+            }
           >
             <DeleteIcon
               sx={{
@@ -37,7 +44,7 @@ const LocacionCard = (props: {
           </Button>
         </CardIconContainer>
 
-        <CardImage src={props.img} alt="" />
+        <CardImage src={props.imagen} alt="" />
       </Grid>
       <Grid item alignSelf="center">
         <CardTitle>{props.titulo}</CardTitle>

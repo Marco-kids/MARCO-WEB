@@ -46,10 +46,10 @@ const CardStatus = styled(Grid)(({ theme }) => ({
 }));
 
 const MuseoCard = (props: {
-  id: number;
+  id: string;
   titulo: string;
-  img: any;
-  estatus: string;
+  img: string;
+  estatus: boolean;
 }) => {
   return (
     <CardContainer container direction="column">

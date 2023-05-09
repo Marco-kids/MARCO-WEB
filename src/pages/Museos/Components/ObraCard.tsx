@@ -33,23 +33,10 @@ const CardTitle = styled(Typography)(({ theme }) => ({
   textTransform: "none",
 }));
 
-const ObraCard = (props: { id: number; titulo: string; img: any }) => {
+const ObraCard = (props: { id: string; titulo: string; img: any }) => {
   return (
     <CardContainer container direction="column">
       <Grid item position="relative">
-        {/* <CardIconContainer
-          container
-          justifyContent="center"
-          alignItems="center"
-        >
-          <EditIcon
-            sx={{
-              width: "2rem",
-              height: "2rem",
-              color: "white",
-            }}
-          />
-        </CardIconContainer> */}
         <CardImage src={props.img} alt="" />
       </Grid>
       <Grid item alignSelf="center">

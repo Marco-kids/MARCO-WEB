@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   GridPageContainer,
   GridTitle,
@@ -6,55 +6,48 @@ import {
 } from "../Dashboard/DashboardStyles";
 import { Button, Grid, Modal, TextField, Typography } from "@mui/material";
 import LocacionCard from "./Components/LocacionCard";
-import PatioIMG from "../../Assets/patio.jpg";
 import { EliminarModal } from "./LocacionesStyle";
 import theme from "../../Utils/Theme";
-
-const MUSEUM_OBRAS = [
-  {
-    id: 1,
-    titulo: "Patio",
-    img: PatioIMG,
-  },
-  {
-    id: 2,
-    titulo: "Patio",
-    img: PatioIMG,
-  },
-  {
-    id: 3,
-    titulo: "Patio",
-    img: PatioIMG,
-  },
-  {
-    id: 4,
-    titulo: "Patio",
-    img: PatioIMG,
-  },
-  {
-    id: 5,
-    titulo: "Patio",
-    img: PatioIMG,
-  },
-  {
-    id: 6,
-    titulo: "Patio",
-    img: PatioIMG,
-  },
-  {
-    id: 7,
-    titulo: "Patio",
-    img: PatioIMG,
-  },
-  {
-    id: 8,
-    titulo: "Patio",
-    img: PatioIMG,
-  },
-];
+import { Locacion } from "../../Types/Types";
+import {
+  deleteLocacion,
+  getAllLocaciones,
+} from "../../Services/LocacionesRequests";
+import { makeImageURL } from "../../Utils/Parser";
 
 const Obras = () => {
   const [openDelete, setOpenDelete] = useState(false);
+  const [locaciones, setLocaciones] = useState<Locacion[]>([]);
+  const [selectedLocacion, setSelectedLocacion] = useState<Locacion>();
+
+  const fetchLocaciones = async () => {
+    const response = await getAllLocaciones();
+    let listaLocaciones: Locacion[] = [];
+
+    for (let i = 0; i < response.data.length; i++) {
+      listaLocaciones.push({
+        _id: response.data[i]._id,
+        nombre: response.data[i].nombre,
+        screenshot: makeImageURL(response.data[i].screenshot),
+        ARWorldMap: "",
+      });
+    }
+    setLocaciones(listaLocaciones);
+  };
+
+  useEffect(() => {
+    fetchLocaciones();
+  }, [openDelete]);
+
+  const onOpenModal = (locacion: Locacion) => {
+    setSelectedLocacion(locacion);
+    setOpenDelete(true);
+  };
+
+  const onDeleteLocacion = async () => {
+    await deleteLocacion(selectedLocacion!._id);
+    onCloseModal();
+  };
 
   const onCloseModal = () => {
     setOpenDelete(false);
@@ -82,14 +75,14 @@ const Obras = () => {
       </Grid>
       <Grid item>
         <Grid container spacing={5} paddingTop="1rem">
-          {MUSEUM_OBRAS.map((obra) => {
+          {locaciones.map((locacion) => {
             return (
               <Grid item xs={3}>
                 <LocacionCard
-                  openModal={setOpenDelete}
-                  id={obra.id}
-                  titulo={obra.titulo}
-                  img={obra.img}
+                  openModal={onOpenModal}
+                  id={locacion._id}
+                  titulo={locacion.nombre}
+                  imagen={locacion.screenshot}
                 />
               </Grid>
             );
@@ -104,19 +97,25 @@ const Obras = () => {
         aria-describedby="modal-modal-description"
       >
         <EliminarModal>
-          <Typography fontSize="2rem" display="flex" paddingBottom="1rem">
-            Borrar museo:&nbsp;
+          <Typography
+            fontSize="1.2rem"
+            display="flex"
+            paddingBottom="1rem"
+            flexDirection="column"
+            fontWeight="700"
+          >
+            Borrar locacion:&nbsp;
             <Typography
               fontSize="2rem"
               fontWeight="700"
               color={theme.palette.primary.main}
             >
-              PATIO
+              {selectedLocacion?.nombre}
             </Typography>
           </Typography>
 
           <Grid container justifyContent="flex-end">
-            <Button variant="contained" onClick={() => onCloseModal()}>
+            <Button variant="contained" onClick={() => onDeleteLocacion()}>
               <Typography fontSize="1.5rem" textTransform="none">
                 Confirmar
               </Typography>
