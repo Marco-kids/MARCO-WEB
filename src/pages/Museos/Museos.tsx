@@ -59,6 +59,8 @@ const Museos = () => {
         imagen: makeImageURL(results.data[i].imagen),
       });
     }
+
+    console.log(listaMuseos);
     setMuseos(listaMuseos);
   };
 

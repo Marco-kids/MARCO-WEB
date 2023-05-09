@@ -3,13 +3,13 @@ import axios from "axios";
 export const getAllObras = () =>
   axios({
     method: "GET",
-    url: "http://localhost:8080/api/all-obras",
+    url: "http://189.205.248.189/marcokids/api/api/all-obras",
   });
 
 export const guardarObra = (formData: FormData) => {
   axios({
     method: "post",
-    url: "http://localhost:8080/api/create-obra",
+    url: "http://189.205.248.189/marcokids/api/api/create-obra",
     data: formData,
   });
 };
@@ -27,7 +27,7 @@ export const getObraByID = async (_id: string) => {
 };
 
 export const deleteObra = async (_id: string) => {
-  const url = `http://localhost:8080/api/delete-obra/${_id}`;
+  const url = `http://189.205.248.189/marcokids/api/api/delete-obra/${_id}`;
 
   axios({
     method: "delete",
@@ -41,7 +41,7 @@ export const deleteObra = async (_id: string) => {
 export const updateObra = () => {
   return axios({
     method: "PUT",
-    url: "http://localhost:8080/api/update-obra",
+    url: "http://189.205.248.189/marcokids/api/api/update-obra",
     data: {
       _id: "6459b4b41f389866e1a27a94",
       field: "nombre",

@@ -3,13 +3,13 @@ import axios from "axios";
 export const getAllMuseos = () =>
   axios({
     method: "GET",
-    url: "http://localhost:8080/api/museo",
+    url: "http://189.205.248.189/marcokids/api/api/museo",
   });
 
 export const guardarMuseo = (formData: FormData) =>
   axios({
     method: "post",
-    url: "http://localhost:8080/api/museo",
+    url: "http://189.205.248.189/marcokids/api/api/museo",
     data: formData,
   });
 
@@ -26,7 +26,7 @@ export const getMuseoById = async (_id: string) => {
 };
 
 export const deleteMuseo = async (_id: string) => {
-  const url = `http://localhost:8080/api/museo/${_id}`;
+  const url = `http://189.205.248.189/marcokids/api/api/museo/${_id}`;
 
   axios({
     method: "delete",

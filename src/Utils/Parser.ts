@@ -1,3 +1,5 @@
 export const makeImageURL = (url: string) => {
-  return `http://localhost:8080/uploads/${url.slice(url.indexOf("s") + 2)}`;
+  return `http://189.205.248.189/marcokids/api/uploads/${url.slice(
+    url.indexOf("s") + 2
+  )}`;
 };
