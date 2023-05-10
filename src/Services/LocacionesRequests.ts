@@ -1,13 +1,14 @@
 import axios from "axios";
+import { APIurl } from "../Utils/Parser";
 
 export const getAllLocaciones = () =>
   axios({
     method: "GET",
-    url: "http://189.205.248.189/marcokids/api/api/locations",
+    url: `${APIurl}/api/locations`,
   });
 
 export const deleteLocacion = (_id: string) => {
-  const url = `http://189.205.248.189/marcokids/api/api/locations/${_id}`;
+  const url = `${APIurl}/api/locations/${_id}`;
 
   axios({
     method: "delete",

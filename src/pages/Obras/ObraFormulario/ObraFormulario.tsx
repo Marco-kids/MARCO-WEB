@@ -1,38 +1,52 @@
-import React, { ChangeEvent, useEffect, useState } from "react";
+import React, { ChangeEvent, useEffect, useRef, useState } from "react";
 import {
   GridPageContainer,
   GridTitle,
   GridTitleContainer,
 } from "../../Dashboard/DashboardStyles";
 import { useNavigate, useParams } from "react-router";
-import { Button, Grid, Modal, TextField, Typography } from "@mui/material";
+import {
+  Button,
+  Grid,
+  Modal,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { GuardarModal } from "../../Museos/MuseosStyles";
 import theme from "../../../Utils/Theme";
 
 import {
   deleteObra,
+  getAllObras,
   getObraByID,
   guardarObra,
   updateObra,
 } from "../../../Services/ObrasRequests";
 import { Obra } from "../../../Types/Types";
+import { APIurl, makeImageURL } from "../../../Utils/Parser";
 
 const ObraFormulario = () => {
   const { id } = useParams();
   const [editarFlag, setEditarFlag] = useState(true);
   const [open, setOpen] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
+  const [allObras, setAllObras] = useState<Obra[]>([]);
 
   // Informacion obra
   const [nombre, setNombre] = useState("");
   const [autor, setAutor] = useState("");
   const [descripcion, setDescripcion] = useState("");
-  const [file, setFile] = useState<any>();
-  const [imagen, setImagen] = useState<any>();
+  const [file, setFile] = useState<any>(null);
+  const [imagen, setImagen] = useState<any>(null);
   const [previewImagen, setPreviewImagen] = useState<string>();
 
   const navigate = useNavigate();
   const params = useParams();
+
+  const initialNombre = useRef("");
+  const initialAutor = useRef("");
+  const initialDescripcion = useRef("");
 
   useEffect(() => {
     if (id === "create") {
@@ -40,7 +54,25 @@ const ObraFormulario = () => {
     } else {
       getObra();
     }
+    fetchObras();
   }, [id]);
+
+  const fetchObras = async () => {
+    const results = await getAllObras();
+
+    let listaObras: Obra[] = [];
+    for (let i = 0; i < results.data.length; i++) {
+      listaObras.push({
+        autor: results.data[i].autor,
+        descripcion: results.data[i].descripcion,
+        modelo: results.data[i].modelo,
+        nombre: results.data[i].nombre,
+        _id: results.data[i]._id,
+        imagen: makeImageURL(results.data[i].imagen),
+      });
+    }
+    setAllObras(listaObras);
+  };
 
   const getObra = async () => {
     const obra: Obra = await getObraByID(params.id!);
@@ -49,10 +81,12 @@ const ObraFormulario = () => {
     setDescripcion(obra.descripcion);
 
     setPreviewImagen(
-      `http://189.205.248.189/marcokids/api/uploads/${obra.imagen.slice(
-        obra.imagen.indexOf("s") + 2
-      )}`
+      `${APIurl}/uploads/${obra.imagen.slice(obra.imagen.indexOf("s") + 2)}`
     );
+
+    initialNombre.current = obra.nombre;
+    initialAutor.current = obra.autor;
+    initialDescripcion.current = obra.descripcion;
   };
 
   const handleFileInputChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -71,6 +105,33 @@ const ObraFormulario = () => {
   };
 
   const onGuardarObra = async () => {
+    const img = imagen.name.slice(imagen.name.lastIndexOf(".") + 1);
+    if (
+      nombre === "" ||
+      autor === "" ||
+      descripcion === "" ||
+      file === null ||
+      imagen === null
+    ) {
+      alert("Se deben llenar todos los datos de la Obra para poder guardarla");
+      return;
+    } else if (file.name.slice(file.name.lastIndexOf(".") + 1) !== "usdz") {
+      alert("El modelo debe ser un archivo .USDZ valido");
+      return;
+    } else if (!(img === "jpeg" || img === "jpg" || img === "png")) {
+      alert("La imagen debe ser un archivo .JPEG, JPG o PNG valido");
+      return;
+    }
+
+    for (let i = 0; i < allObras.length; i++) {
+      if (allObras[i].nombre === nombre) {
+        alert(
+          `Ya existe una obra con el nombre: ${nombre}. Selecciona un nombre diferente`
+        );
+        return;
+      }
+    }
+
     let formData = new FormData();
 
     formData.append("nombre", nombre);
@@ -84,7 +145,40 @@ const ObraFormulario = () => {
   };
 
   const onUpdateObra = async () => {
-    await updateObra();
+    if (nombre === "" || autor === "" || descripcion === "") {
+      alert(
+        "Se debe llenar el nombre, autor y descripcion para actualizar la obra"
+      );
+      return;
+    }
+
+    for (let i = 0; i < allObras.length; i++) {
+      if (allObras[i].nombre === nombre && allObras[i]._id !== id) {
+        alert(
+          `Ya existe una obra con el nombre: ${nombre}. Selecciona un nombre diferente`
+        );
+        return;
+      }
+    }
+
+    try {
+      if (initialNombre.current !== nombre) {
+        await updateObra(id!, "nombre", nombre);
+      }
+    } catch {}
+
+    try {
+      if (initialAutor.current !== autor) {
+        await updateObra(id!, "autor", autor);
+      }
+    } catch {}
+
+    try {
+      if (initialDescripcion.current !== descripcion) {
+        await updateObra(id!, "descripcion", descripcion);
+      }
+    } catch {}
+
     setOpen(true);
   };
 
@@ -158,63 +252,69 @@ const ObraFormulario = () => {
             />
           </Grid>
 
-          <Grid item container paddingBottom="1rem" direction="column">
-            <Grid item>
-              <Typography fontSize="1.5rem" fontWeight="700">
-                Modelo
-              </Typography>
-            </Grid>
-            <Grid item>
-              <TextField
-                name="File"
-                margin="dense"
-                type="file"
-                onChange={handleFileInputChange}
-                sx={{
-                  height: "100%",
-                  fontSize: "2rem",
-                  cursor: "pointer",
-                }}
-                fullWidth
-                disabled={editarFlag}
-              />
-            </Grid>
+          {editarFlag ? (
+            ""
+          ) : (
+            <Grid item container paddingBottom="1rem" direction="column">
+              <Grid item>
+                <Typography fontSize="1.5rem" fontWeight="700">
+                  Modelo
+                </Typography>
+              </Grid>
+              <Grid item>
+                <TextField
+                  name="File"
+                  margin="dense"
+                  type="file"
+                  onChange={handleFileInputChange}
+                  sx={{
+                    height: "100%",
+                    fontSize: "2rem",
+                    cursor: "pointer",
+                  }}
+                  fullWidth
+                />
+              </Grid>
 
-            <Grid item>
-              <Typography fontSize="1rem" fontWeight="500">
-                El modelo debe ser un archivo .USDZ válido
-              </Typography>
+              <Grid item>
+                <Typography fontSize="1rem" fontWeight="500">
+                  El modelo debe ser un archivo .USDZ válido
+                </Typography>
+              </Grid>
             </Grid>
-          </Grid>
+          )}
 
-          <Grid item container paddingBottom="1rem" direction="column">
-            <Grid item>
-              <Typography fontSize="1.5rem" fontWeight="700">
-                Imagen
-              </Typography>
-            </Grid>
-            <Grid item>
-              <TextField
-                name="File"
-                margin="dense"
-                type="file"
-                onChange={handleImageInputChange}
-                sx={{
-                  height: "100%",
-                  fontSize: "2rem",
-                  cursor: "pointer",
-                }}
-                fullWidth
-                disabled={editarFlag}
-              />
-            </Grid>
+          {editarFlag ? (
+            ""
+          ) : (
+            <Grid item container paddingBottom="1rem" direction="column">
+              <Grid item>
+                <Typography fontSize="1.5rem" fontWeight="700">
+                  Imagen
+                </Typography>
+              </Grid>
+              <Grid item>
+                <TextField
+                  name="File"
+                  margin="dense"
+                  type="file"
+                  onChange={handleImageInputChange}
+                  sx={{
+                    height: "100%",
+                    fontSize: "2rem",
+                    cursor: "pointer",
+                  }}
+                  fullWidth
+                />
+              </Grid>
 
-            <Grid item>
-              <Typography fontSize="1rem" fontWeight="500">
-                Toma una captura de pantalla del modelo y subela aqui
-              </Typography>
+              <Grid item>
+                <Typography fontSize="1rem" fontWeight="500">
+                  Toma una captura de pantalla del modelo y subela aqui
+                </Typography>
+              </Grid>
             </Grid>
-          </Grid>
+          )}
         </Grid>
         <Grid
           item

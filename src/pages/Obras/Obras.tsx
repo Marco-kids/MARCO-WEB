@@ -33,6 +33,7 @@ const Obras = () => {
         imagen: makeImageURL(results.data[i].imagen),
       });
     }
+
     setAllObras(listaObras);
     setShowObras(listaObras);
   };

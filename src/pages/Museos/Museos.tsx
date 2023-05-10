@@ -60,7 +60,6 @@ const Museos = () => {
       });
     }
 
-    console.log(listaMuseos);
     setMuseos(listaMuseos);
   };
 
@@ -82,7 +81,16 @@ const Museos = () => {
       </GridTitleContainer>
       {museos.map((museo) => {
         return (
-          <Grid item container spacing={4} padding="1.5rem 0 0 0">
+          <Grid
+            item
+            container
+            spacing={4}
+            padding="1.5rem 0 1.5rem 0"
+            sx={{
+              borderBottom: "0.1rem  solid rgba(230, 62, 107, 0.2) ",
+              borderBottomStyle: "dashed",
+            }}
+          >
             <Grid item xs={3}>
               <Link to={`/museos/${museo._id}`}>
                 <Button

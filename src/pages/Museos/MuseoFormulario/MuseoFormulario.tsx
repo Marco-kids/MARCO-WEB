@@ -31,6 +31,8 @@ import {
   deleteMuseo,
   getMuseoById,
   guardarMuseo,
+  updateLocationsById,
+  updateObrasById,
 } from "../../../Services/MuseoRequests";
 
 const MuseoFormulario = () => {
@@ -43,7 +45,7 @@ const MuseoFormulario = () => {
   const [nombre, setNombre] = useState<string>("");
   const [obrasName, setObrasName] = useState<string[]>([]);
   const [locacionesName, setLocacionesName] = useState<string[]>([]);
-  const [imagen, setImagen] = useState<any>();
+  const [imagen, setImagen] = useState<any>(null);
   const [isActive, setIsActive] = useState<boolean>(false);
 
   const [open, setOpen] = useState(false);
@@ -51,7 +53,7 @@ const MuseoFormulario = () => {
 
   const navigate = useNavigate();
   const params = useParams();
-  let initialActivate = useRef(false);
+  const initialActivate = useRef(false);
 
   useEffect(() => {
     if (id === "create") {
@@ -147,6 +149,15 @@ const MuseoFormulario = () => {
   };
 
   const onGuardarMuseo = async () => {
+    const img = imagen.name.slice(imagen.name.lastIndexOf(".") + 1);
+    if (nombre === "" || imagen === null) {
+      alert("Se deben llenar todos los datos del Museo para poder guardarla");
+      return;
+    } else if (!(img === "jpeg" || img === "jpg" || img === "png")) {
+      alert("La imagen debe ser un archivo .JPEG, JPG o PNG valido");
+      return;
+    }
+
     const listaObrasId: string[] = [];
     const listaLocacionesId: string[] = [];
 
@@ -166,24 +177,57 @@ const MuseoFormulario = () => {
       }
     }
 
+    if (listaObrasId.length !== listaLocacionesId.length) {
+      alert(
+        "El numero de OBRAS seleccionadas debe ser igual al numero de LOCACIONES seleccionadas"
+      );
+      return;
+    }
+
     let formData = new FormData();
     formData.append("nombre", nombre);
     formData.append("obras", `[${listaObrasId}]`);
     formData.append("locations", `[${listaLocacionesId}]`);
     formData.append("imagen", imagen);
-
     await guardarMuseo(formData);
 
-    if (isActive === true) {
-      await onActivateMuseum();
-    }
     setOpen(true);
   };
 
   const onEditMuseo = async () => {
-    if (initialActivate.current === false && isActive === true) {
-      onActivateMuseum();
+    const listaObrasId: string[] = [];
+    for (let i = 0; i < obrasName.length; i++) {
+      for (let j = 0; j < allObras.length; j++) {
+        if (obrasName[i] === allObras[j].nombre) {
+          listaObrasId.push(`${allObras[j]._id}`);
+        }
+      }
     }
+
+    const listaLocacionesId: string[] = [];
+    for (let i = 0; i < locacionesName.length; i++) {
+      for (let j = 0; j < allLocations.length; j++) {
+        if (locacionesName[i] === allLocations[j].nombre) {
+          listaLocacionesId.push(`${allLocations[j]._id}`);
+        }
+      }
+    }
+
+    if (listaObrasId.length !== listaLocacionesId.length) {
+      alert(
+        "El numero de OBRAS seleccionadas debe ser igual al numero de LOCACIONES seleccionadas"
+      );
+      return;
+    }
+
+    if (initialActivate.current === false && isActive === true) {
+      await onActivateMuseum();
+    }
+
+    await updateObrasById(id!, listaObrasId);
+    await updateLocationsById(id!, listaLocacionesId);
+
+    setOpen(true);
   };
 
   const onDeleteMuseo = async () => {
@@ -235,6 +279,7 @@ const MuseoFormulario = () => {
               value={nombre}
               onChange={(e) => setNombre(e.target.value)}
               fullWidth
+              disabled={editarFlag}
             />
           </Grid>
 
@@ -288,29 +333,45 @@ const MuseoFormulario = () => {
             </FormControl>
           </Grid>
 
-          <Grid item container paddingBottom="1rem">
-            <Typography fontSize="1.5rem" fontWeight="700">
-              Imagen
-            </Typography>
+          {editarFlag ? (
+            ""
+          ) : (
+            <Grid item container paddingBottom="1rem">
+              <Typography fontSize="1.5rem" fontWeight="700">
+                Imagen
+              </Typography>
 
-            <Input
-              type="file"
-              name="hola"
-              onChange={handleImageInputChange}
-              style={{
-                width: "100%",
-                fontSize: "1.5rem",
-                cursor: "pointer",
-              }}
-              disabled={editarFlag}
-            ></Input>
-          </Grid>
+              <Input
+                type="file"
+                name="hola"
+                onChange={handleImageInputChange}
+                style={{
+                  width: "100%",
+                  fontSize: "1.5rem",
+                  cursor: "pointer",
+                }}
+              ></Input>
+            </Grid>
+          )}
 
           <Grid item paddingBottom="1rem">
             <Typography fontSize="1.5rem" fontWeight="700">
-              Activo
+              Estado:&nbsp;
+              <span style={{ color: "#E63E6B" }}>
+                {isActive ? "Activo" : "Inactivo"}
+              </span>
             </Typography>
+
+            {!editarFlag ? (
+              <Typography fontSize="0.8rem" fontWeight="400">
+                Para activar el museo, primero se debe crear exitosamente. Haga
+                click en "Guardar"
+              </Typography>
+            ) : (
+              ""
+            )}
             <Switch
+              disabled={!editarFlag}
               checked={isActive}
               onChange={() => setIsActive(!isActive)}
             />

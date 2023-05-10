@@ -1,15 +1,16 @@
 import axios from "axios";
+import { APIurl } from "../Utils/Parser";
 
 export const getAllObras = () =>
   axios({
     method: "GET",
-    url: "http://189.205.248.189/marcokids/api/api/all-obras",
+    url: `${APIurl}/api/all-obras`,
   });
 
 export const guardarObra = (formData: FormData) => {
   axios({
     method: "post",
-    url: "http://189.205.248.189/marcokids/api/api/create-obra",
+    url: `${APIurl}/api/create-obra`,
     data: formData,
   });
 };
@@ -27,7 +28,7 @@ export const getObraByID = async (_id: string) => {
 };
 
 export const deleteObra = async (_id: string) => {
-  const url = `http://189.205.248.189/marcokids/api/api/delete-obra/${_id}`;
+  const url = `${APIurl}/api/delete-obra/${_id}`;
 
   axios({
     method: "delete",
@@ -38,20 +39,20 @@ export const deleteObra = async (_id: string) => {
 //
 //
 // NOT WORKING
-export const updateObra = () => {
+export const updateObra = (_id: string, field: string, value: any) => {
   return axios({
     method: "PUT",
-    url: "http://189.205.248.189/marcokids/api/api/update-obra",
+    url: `${APIurl}/api/update-obra`,
     data: {
-      _id: "6459b4b41f389866e1a27a94",
-      field: "nombre",
-      value: "AAAAAAAAAAAAAAAA",
+      id: _id,
+      field: field,
+      value: value,
     },
   });
 };
 
 export const getModelo = async (modelo: string) => {
-  const url = `http://http://189.205.248.189/marcokids/api/api/:8080/uploads/${modelo.slice(
+  const url = `${APIurl}/api/:8080/uploads/${modelo.slice(
     modelo.indexOf("s") + 2
   )}`;
 
@@ -62,9 +63,7 @@ export const getModelo = async (modelo: string) => {
 };
 
 export const getImagen = async (imagen: string) => {
-  const url = `http://http://189.205.248.189/marcokids/api/api/:8080/uploads/${imagen.slice(
-    imagen.indexOf("s") + 2
-  )}`;
+  const url = `${APIurl}/uploads/${imagen.slice(imagen.indexOf("s") + 2)}`;
 
   return axios({
     method: "GET",
