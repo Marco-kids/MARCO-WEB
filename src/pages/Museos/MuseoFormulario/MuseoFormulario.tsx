@@ -156,6 +156,11 @@ const MuseoFormulario = () => {
     } else if (!(img === "jpeg" || img === "jpg" || img === "png")) {
       alert("La imagen debe ser un archivo .JPEG, JPG o PNG valido");
       return;
+    } else if (imagen.name.includes(" ")) {
+      alert(
+        "El nombre de la IMAGEN no puede contener espacios. Cambia el nombre de la IMAGEN y súbelo otra vez"
+      );
+      return;
     }
 
     const listaObrasId: string[] = [];
