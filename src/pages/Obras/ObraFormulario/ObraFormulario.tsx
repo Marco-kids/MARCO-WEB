@@ -5,14 +5,7 @@ import {
   GridTitleContainer,
 } from "../../Dashboard/DashboardStyles";
 import { useNavigate, useParams } from "react-router";
-import {
-  Button,
-  Grid,
-  Modal,
-  Stack,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Button, Grid, Modal, TextField, Typography } from "@mui/material";
 import { GuardarModal } from "../../Museos/MuseosStyles";
 import theme from "../../../Utils/Theme";
 
@@ -120,6 +113,16 @@ const ObraFormulario = () => {
       return;
     } else if (!(img === "jpeg" || img === "jpg" || img === "png")) {
       alert("La imagen debe ser un archivo .JPEG, JPG o PNG valido");
+      return;
+    } else if (imagen.name.includes(" ")) {
+      alert(
+        "El nombre de la imagen no puede contener espacios. Cambia el nombre de la IMAGEN y súbelo otra vez"
+      );
+      return;
+    } else if (file.name.includes(" ")) {
+      alert(
+        "El nombre del archivo USDZ no puede contener espacios. Cambia el nombre del archivo y súbelo otra vez"
+      );
       return;
     }
 
@@ -344,6 +347,7 @@ const ObraFormulario = () => {
                   borderRadius: "1rem",
                   boxShadow: "0.2rem 0.2rem 1rem 0.2rem rgba(0,0,0,0.2)",
                 }}
+                alt="Previsualizacion de imagen"
               />
             ) : (
               ""
@@ -359,6 +363,7 @@ const ObraFormulario = () => {
                   borderRadius: "1rem",
                   boxShadow: "0.2rem 0.2rem 1rem 0.2rem rgba(0,0,0,0.2)",
                 }}
+                alt="Imagen subida"
               />
             ) : (
               ""
