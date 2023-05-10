@@ -276,6 +276,7 @@ const MuseoFormulario = () => {
               id="outlined-basic"
               variant="outlined"
               placeholder="Escribe..."
+              inputProps={{ maxLength: 100 }}
               value={nombre}
               onChange={(e) => setNombre(e.target.value)}
               fullWidth

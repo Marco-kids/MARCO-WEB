@@ -78,6 +78,7 @@ const Obras = () => {
           Buscar:
         </Typography>
         <TextField
+          inputProps={{ maxLength: 100 }}
           id="outlined-basic"
           variant="outlined"
           placeholder="Escribe..."

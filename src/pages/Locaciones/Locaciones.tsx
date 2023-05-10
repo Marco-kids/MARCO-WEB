@@ -92,6 +92,7 @@ const Obras = () => {
           id="outlined-basic"
           variant="outlined"
           placeholder="Escribe..."
+          inputProps={{ maxLength: 100 }}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
       </Grid>

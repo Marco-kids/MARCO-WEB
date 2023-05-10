@@ -214,6 +214,7 @@ const ObraFormulario = () => {
               Nombre
             </Typography>
             <TextField
+              inputProps={{ maxLength: 100 }}
               id="outlined-basic"
               variant="outlined"
               placeholder="Escribe..."
@@ -228,6 +229,7 @@ const ObraFormulario = () => {
               Autor
             </Typography>
             <TextField
+              inputProps={{ maxLength: 100 }}
               id="outlined-basic"
               variant="outlined"
               placeholder="Escribe..."
@@ -242,6 +244,7 @@ const ObraFormulario = () => {
               Descripcion
             </Typography>
             <TextField
+              inputProps={{ maxLength: 200 }}
               id="outlined-multiline-static"
               multiline
               rows={2}
