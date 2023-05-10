@@ -1,15 +1,16 @@
 import axios from "axios";
+import { APIurl } from "../Utils/Parser";
 
 export const getAllMuseos = () =>
   axios({
     method: "GET",
-    url: "http://189.205.248.189/marcokids/api/api/museo",
+    url: `${APIurl}/api/museo`,
   });
 
 export const guardarMuseo = (formData: FormData) =>
   axios({
     method: "post",
-    url: "http://189.205.248.189/marcokids/api/api/museo",
+    url: `${APIurl}/api/museo`,
     data: formData,
   });
 
@@ -26,7 +27,7 @@ export const getMuseoById = async (_id: string) => {
 };
 
 export const deleteMuseo = async (_id: string) => {
-  const url = `http://189.205.248.189/marcokids/api/api/museo/${_id}`;
+  const url = `${APIurl}/api/museo/${_id}`;
 
   axios({
     method: "delete",
@@ -35,10 +36,34 @@ export const deleteMuseo = async (_id: string) => {
 };
 
 export const activateMuseo = async (_id: string) => {
-  const url = `http://189.205.248.189/marcokids/api/api/museo/activate/${_id}`;
+  const url = `${APIurl}/api/museo/activate/${_id}`;
 
   axios({
     method: "PUT",
     url: url,
+  });
+};
+
+export const updateObrasById = async (_id: string, obras: string[]) => {
+  const url = `${APIurl}/api/museo/obras/${_id}`;
+
+  axios({
+    method: "PUT",
+    url: url,
+    data: {
+      obras: obras,
+    },
+  });
+};
+
+export const updateLocationsById = async (_id: string, locations: string[]) => {
+  const url = `${APIurl}/api/museo/locations/${_id}`;
+
+  axios({
+    method: "PUT",
+    url: url,
+    data: {
+      locations: locations,
+    },
   });
 };
