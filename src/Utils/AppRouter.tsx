@@ -2,7 +2,6 @@ import { Routes, Route } from "react-router-dom";
 import Box from "@mui/material/Box";
 import styled from "@emotion/styled";
 
-import Dashboard from "../pages/Dashboard/Dashboard";
 import Museos from "../pages/Museos/Museos";
 import Obras from "../pages/Obras/Obras";
 import Locaciones from "../pages/Locaciones/Locaciones";

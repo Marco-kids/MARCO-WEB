@@ -1,21 +1,10 @@
 import React from "react";
 import { Grid, Typography } from "@mui/material";
-import EditIcon from "@mui/icons-material/Edit";
 import styled from "@emotion/styled";
 
 const CardContainer = styled(Grid)(({ theme }) => ({
   boxShadow: "0.2rem 0.2rem 0.5rem 0.1rem rgba(0,0,0,0.1)",
   borderRadius: "1rem",
-}));
-
-const CardIconContainer = styled(Grid)(({ theme }) => ({
-  position: "absolute",
-  bottom: "1rem",
-  right: "1rem",
-  borderRadius: "50%",
-  backgroundColor: "#E63E6B",
-  width: "3rem",
-  height: "3rem",
 }));
 
 const CardImage = styled("img")(({ theme }) => ({

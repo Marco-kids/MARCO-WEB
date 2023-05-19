@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 
 import Box from "@mui/material/Box";
@@ -11,7 +11,7 @@ import { ImageContainer, LogoIconSmall } from "../../styles/Styles";
 import { Button, Grid, Typography } from "@mui/material";
 import theme from "../../Utils/Theme";
 
-import MarcoLogo from "../../Assets/MarcoLogo.png";
+import MarcoLogo from "../../assets/MarcoLogo.png";
 
 const drawerWidth = 180;
 

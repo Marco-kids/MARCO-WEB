@@ -18,7 +18,7 @@ export const getMuseoById = async (_id: string) => {
   const allMuseos = await getAllMuseos();
 
   for (let i = 0; i < allMuseos.data.length; i++) {
-    if (allMuseos.data[i]._id == _id) {
+    if (allMuseos.data[i]._id === _id) {
       return allMuseos.data[i];
     }
   }
