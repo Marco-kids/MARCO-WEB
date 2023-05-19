@@ -3,7 +3,7 @@ import Box from "@mui/material/Box";
 import { ThemeProvider } from "@mui/material/styles";
 
 import theme from "./Utils/Theme";
-import Navbar from "./Components/AppBar/AppBar";
+import Navbar from "./pages/AppBar/AppBar";
 import AppRouter from "./Utils/AppRouter";
 
 function App() {
