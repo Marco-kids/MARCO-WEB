@@ -133,7 +133,7 @@ const Obras = () => {
               fontWeight="700"
               color={theme.palette.primary.main}
             >
-              {selectedLocacion!.nombre}
+              {selectedLocacion ? selectedLocacion.nombre : ""}
             </Typography>
           </Typography>
 
